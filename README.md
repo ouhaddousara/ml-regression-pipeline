@@ -32,7 +32,7 @@ data/           README.md + raw/ (CSV non versionnés)
 results/        metrics (*.json), prédictions (*.csv), logs/partN.txt
 report/         main.tex, figures/ (PNG 200 dpi), generated/ (snippets LaTeX), screenshots/
 docs/           SCREENSHOTS.md (checklist des captures)
-Makefile, requirements.txt, LICENSE, .gitignore
+Makefile, requirements.txt, .gitignore
 ```
 
 ## Quickstart
@@ -115,5 +115,3 @@ Le PDF est produit dans `report/build/main.pdf`. Les captures optionnelles plac�
 
 ## Auteur
 **Sara Ouhaddou** — Ingénierie LSI (Software and Intelligent Systems), FST Tanger — [github.com/ouhaddousara](https://github.com/ouhaddousara)
-
-Licence : MIT.
