@@ -1,0 +1,40 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Secrets (never commit credentials)
+.env
+.env.*
+kaggle.json
+*.key
+
+# Datasets (never commit raw data)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/
+/*.csv
+*.zip
+
+# Test-set rows derived from the Insurance data (kept out of git on purpose)
+results/part3_predictions.csv
+
+# LaTeX build artefacts
+report/build/
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
