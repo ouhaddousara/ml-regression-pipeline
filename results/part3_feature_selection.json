@@ -1,0 +1,89 @@
+{
+  "selected": [
+    "smoker_yes",
+    "age",
+    "bmi"
+  ],
+  "scores": {
+    "smoker_yes": {
+      "abs_corr": 0.7800625133095039,
+      "f_score": 1659.9521006905395,
+      "f_pvalue": 1.0360773472185658e-219,
+      "mutual_info": 0.35830330284025025,
+      "rank_abs_corr": 1.0,
+      "rank_f_score": 1.0,
+      "rank_mutual_info": 2.0,
+      "mean_rank": 1.3333333333333333
+    },
+    "age": {
+      "abs_corr": 0.2817208166410559,
+      "f_score": 92.0709049822024,
+      "f_pvalue": 5.694480844063285e-21,
+      "mutual_info": 1.400916045193859,
+      "rank_abs_corr": 2.0,
+      "rank_f_score": 2.0,
+      "rank_mutual_info": 1.0,
+      "mean_rank": 1.6666666666666667
+    },
+    "bmi": {
+      "abs_corr": 0.19731629949070123,
+      "f_score": 43.26571028192729,
+      "f_pvalue": 7.467475822627936e-11,
+      "mutual_info": 0.09631819292971588,
+      "rank_abs_corr": 3.0,
+      "rank_f_score": 3.0,
+      "rank_mutual_info": 5.0,
+      "mean_rank": 3.6666666666666665
+    },
+    "children": {
+      "abs_corr": 0.07188497467963077,
+      "f_score": 5.547502596438209,
+      "f_pvalue": 0.018687166961165142,
+      "mutual_info": 0.139236936020112,
+      "rank_abs_corr": 4.0,
+      "rank_f_score": 4.0,
+      "rank_mutual_info": 4.0,
+      "mean_rank": 4.0
+    },
+    "sex_male": {
+      "abs_corr": 0.05680244375545801,
+      "f_score": 3.4570751283236536,
+      "f_pvalue": 0.06325648046006897,
+      "mutual_info": 0.15492930633529944,
+      "rank_abs_corr": 6.0,
+      "rank_f_score": 6.0,
+      "rank_mutual_info": 3.0,
+      "mean_rank": 5.0
+    },
+    "region_southeast": {
+      "abs_corr": 0.06749133443601293,
+      "f_score": 4.887086751396642,
+      "f_pvalue": 0.027269638099018965,
+      "mutual_info": 0.03173396698405995,
+      "rank_abs_corr": 5.0,
+      "rank_f_score": 5.0,
+      "rank_mutual_info": 6.0,
+      "mean_rank": 5.333333333333333
+    },
+    "region_southwest": {
+      "abs_corr": 0.034994111286059656,
+      "f_score": 1.3094633496556805,
+      "f_pvalue": 0.25274823795801016,
+      "mutual_info": 0.019052205433099267,
+      "rank_abs_corr": 7.0,
+      "rank_f_score": 7.0,
+      "rank_mutual_info": 7.0,
+      "mean_rank": 7.0
+    },
+    "region_northwest": {
+      "abs_corr": 0.03377597331279533,
+      "f_score": 1.2197834355211061,
+      "f_pvalue": 0.26965191719182535,
+      "mutual_info": 0.016970649704029395,
+      "rank_abs_corr": 8.0,
+      "rank_f_score": 8.0,
+      "rank_mutual_info": 8.0,
+      "mean_rank": 8.0
+    }
+  }
+}

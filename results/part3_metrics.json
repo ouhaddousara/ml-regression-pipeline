@@ -1,0 +1,67 @@
+{
+  "dataset": "Insurance",
+  "target": "charges",
+  "test_size": 0.2,
+  "random_state": 42,
+  "n_train": 1070,
+  "n_test": 268,
+  "encoded_features": [
+    "age",
+    "bmi",
+    "children",
+    "sex_male",
+    "smoker_yes",
+    "region_northwest",
+    "region_southeast",
+    "region_southwest"
+  ],
+  "selected_features": [
+    "smoker_yes",
+    "age",
+    "bmi"
+  ],
+  "selection_rule": "lowest mean rank over |corr|, f_regression, mutual_info (train set)",
+  "scaler": {
+    "type": "StandardScaler",
+    "fitted_on": "train only",
+    "mean": {
+      "smoker_yes": 0.205607476635514,
+      "age": 39.357009345794395,
+      "bmi": 30.560397196261682
+    },
+    "scale": {
+      "smoker_yes": 0.4041448282325169,
+      "age": 14.067381985138546,
+      "bmi": 6.040561000606501
+    }
+  },
+  "coef_standardised": {
+    "smoker_yes": 9568.279088307472,
+    "age": 3649.2224392755134,
+    "bmi": 1971.9425409818957
+  },
+  "coef_original_units": {
+    "smoker_yes": 23675.3718466553,
+    "age": 259.41020462305823,
+    "bmi": 326.45023215292474
+  },
+  "intercept_standardised": 13346.089736364485,
+  "intercept_original_units": -11707.802334583159,
+  "scaling_invariance_max_abs_diff": 1.4551915228366852e-11,
+  "target_skewness": 1.5158796580240388,
+  "train": {
+    "mse": 37638069.17025345,
+    "rmse": 6134.9872999260115,
+    "mae": 4242.183081870754,
+    "r2": 0.7392286795956207
+  },
+  "test": {
+    "mse": 34512843.880227886,
+    "rmse": 5874.763304187488,
+    "mae": 4260.560091099393,
+    "r2": 0.7776932310583375
+  },
+  "baseline_rmse": 12465.610441715768,
+  "target_mean": 13270.422265141257,
+  "target_std": 12110.011236694001
+}

@@ -1,0 +1,145 @@
+
+==============================================================================
+Item 1 - EDA
+==============================================================================
+[insurance] loaded data/raw/insurance.csv -> shape (1338, 7)
+[insurance] columns found: ['age', 'sex', 'bmi', 'children', 'smoker', 'region', 'charges']
+Rows after dropping missing values: 1338 / 1338
+
+-- info()
+<class 'pandas.DataFrame'>
+RangeIndex: 1338 entries, 0 to 1337
+Data columns (total 7 columns):
+ #   Column    Non-Null Count  Dtype  
+---  ------    --------------  -----  
+ 0   age       1338 non-null   int64  
+ 1   sex       1338 non-null   str    
+ 2   bmi       1338 non-null   float64
+ 3   children  1338 non-null   int64  
+ 4   smoker    1338 non-null   str    
+ 5   region    1338 non-null   str    
+ 6   charges   1338 non-null   float64
+dtypes: float64(2), int64(2), str(3)
+memory usage: 73.3 KB
+
+-- describe()
+           count          mean           std        min         25%       50%           75%          max
+age       1338.0     39.207025     14.049960    18.0000    27.00000    39.000     51.000000     64.00000
+bmi       1338.0     30.663397      6.098187    15.9600    26.29625    30.400     34.693750     53.13000
+children  1338.0      1.094918      1.205493     0.0000     0.00000     1.000      2.000000      5.00000
+charges   1338.0  13270.422265  12110.011237  1121.8739  4740.28715  9382.033  16639.912515  63770.42801
+
+duplicated rows: 1
+
+sex:
+sex
+male      676
+female    662
+Name: count, dtype: int64
+
+smoker:
+smoker
+no     1064
+yes     274
+Name: count, dtype: int64
+
+region:
+region
+southeast    364
+southwest    325
+northwest    325
+northeast    324
+Name: count, dtype: int64
+
+Skewness of charges: 1.5159
+
+Encoded columns: ['age', 'bmi', 'children', 'charges', 'sex_male', 'smoker_yes', 'region_northwest', 'region_southeast', 'region_southwest']
+
+Correlation with charges (full data, EDA only):
+smoker_yes          0.787251
+age                 0.299008
+bmi                 0.198341
+region_southeast    0.073982
+children            0.067998
+sex_male            0.057292
+region_northwest   -0.039905
+region_southwest   -0.043210
+Name: charges, dtype: float64
+[figure] saved report/figures/p3_eda_overview.png
+[figure] saved report/figures/p3_corr_heatmap.png
+
+train = 1070 rows, test = 268 rows (test_size=0.2, random_state=42)
+
+==============================================================================
+Item 2 - feature selection (3 criteria, TRAIN set only)
+==============================================================================
+                  abs_corr  f_score   f_pvalue  mutual_info  rank_abs_corr  rank_f_score  rank_mutual_info  mean_rank
+smoker_yes          0.7801     1660 1.036e-219       0.3583              1             1                 2      1.333
+age                 0.2817    92.07  5.694e-21        1.401              2             2                 1      1.667
+bmi                 0.1973    43.27  7.467e-11      0.09632              3             3                 5      3.667
+children           0.07188    5.548    0.01869       0.1392              4             4                 4          4
+sex_male            0.0568    3.457    0.06326       0.1549              6             6                 3          5
+region_southeast   0.06749    4.887    0.02727      0.03173              5             5                 6      5.333
+region_southwest   0.03499    1.309     0.2527      0.01905              7             7                 7          7
+region_northwest   0.03378     1.22     0.2697      0.01697              8             8                 8          8
+Top-3 by abs_corr: ['smoker_yes', 'age', 'bmi']
+Top-3 by f_score: ['smoker_yes', 'age', 'bmi']
+Top-3 by mutual_info: ['age', 'smoker_yes', 'sex_male']
+
+SELECTED FEATURES (lowest mean rank): ['smoker_yes', 'age', 'bmi']
+[figure] saved report/figures/p3_feature_scores.png
+[latex] saved report/generated/part3_feature_selection.tex
+[results] saved results/part3_feature_selection.json
+
+==============================================================================
+Item 3 - standardisation (StandardScaler fitted on TRAIN only)
+==============================================================================
+Scaler mean_ (train): {'smoker_yes': np.float64(0.2056), 'age': np.float64(39.357), 'bmi': np.float64(30.5604)}
+Scaler scale_ (train): {'smoker_yes': np.float64(0.4041), 'age': np.float64(14.0674), 'bmi': np.float64(6.0406)}
+
+==============================================================================
+Item 4 - LinearRegression fit
+==============================================================================
+            Coef. standardisé  Coef. unité d'origine  Moyenne (train)  Écart-type (train)
+smoker_yes            9568.28                23675.4         0.205607            0.404145
+age                   3649.22                 259.41           39.357             14.0674
+bmi                   1971.94                 326.45          30.5604             6.04056
+Intercept (standardised space): 13346.1
+Intercept (original units):     -11707.8
+[latex] saved report/generated/part3_coefficients.tex
+
+==============================================================================
+Item 5 - predictions on the test set
+==============================================================================
+         Réel   Prédit  Erreur (réel - prédit)
+764   9095.07  8184.04                  911.03
+887   5272.18  7431.00                -2158.83
+890  29330.98 37346.44                -8015.45
+1293  9301.89  8629.53                  672.37
+259  33750.29 27316.65                 6433.64
+1312  4536.26 11116.86                -6580.60
+899   2117.34   571.02                 1546.32
+752  14210.54 17268.55                -3058.01
+1286  3732.63  1200.01                 2532.62
+707  10264.44 10369.15                 -104.71
+[latex] saved report/generated/part3_predictions.tex
+
+Scaling invariance check: max |pred(scaled) - pred(unscaled)| = 1.455e-11
+
+==============================================================================
+Item 6 - result plot
+==============================================================================
+[figure] saved report/figures/p3_actual_vs_predicted.png
+
+==============================================================================
+Item 7 - evaluation (MSE, RMSE, MAE)
+==============================================================================
+TRAIN                        MSE=3.76381e+07  RMSE=6134.99  MAE=4242.18  R2=0.7392
+TEST                         MSE=3.45128e+07  RMSE=5874.76  MAE=4260.56  R2=0.7777
+Baseline RMSE (always predict the train mean): 12465.6
+Target mean = 13270.4, target std = 12110
+RMSE(test) / mean(target) = 44.27 %
+[results] saved results/part3_metrics.json
+[latex] saved report/generated/part3_metrics.tex
+
+Part 3 finished.
