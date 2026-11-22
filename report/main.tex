@@ -3,9 +3,8 @@
 % Compilation (depuis report/) :
 %     latexmk -pdf -interaction=nonstopmode -outdir=build main.tex
 % Tous les chiffres viennent de report/generated/*.tex (produits par src/*.py).
-% Les phrases qui dependent de ces chiffres sont marquees par \apc{...}
-% (rendu : [A COMPLETER APRES EXECUTION : ...]). Pour les retrouver :
-%     grep -n '\\apc{' main.tex
+% Toutes les interpretations sont redigees. La macro \apc (marqueur rouge) reste definie
+% mais n'est plus utilisee.
 % =============================================================================
 \documentclass[11pt,a4paper]{report}
 
@@ -171,12 +170,7 @@ rapport :
         le jeu China GDP, avec comparaison des mod\`eles.
 \end{itemize}
 
-\paragraph{Principe de r\'edaction.} Aucun chiffre de ce rapport n'est saisi \`a la main :
-les m\'etriques, les tableaux et les valeurs cit\'ees dans le texte sont inject\'es
-automatiquement depuis les fichiers produits par les scripts du d\'ep\^ot
-(\texttt{report/generated/}). Le texte pr\'esente le cadre de raisonnement ; les
-phrases d'interpr\'etation qui d\'ependent des valeurs obtenues sont rep\'er\'ees en rouge
-par la mention \apc{\ldots} et se compl\`etent apr\`es ex\'ecution.
+\paragraph{Principe de rédaction.} Les métriques, les tableaux et les valeurs principales citées dans le texte sont injectés automatiquement depuis les fichiers produits par les scripts du dépôt (\texttt{report/generated/}) : ils ne sont pas saisis à la main. Quelques valeurs écrites directement dans le texte (corrélations et scores de la sélection de variables, rapports du type «\,environ 3,4 fois plus faible\,») sont recopiées ou calculées à partir de ces mêmes résultats. Les interprétations s'appuient uniquement sur les tableaux et les valeurs de ce rapport.
 
 % =============================================================================
 % CHAPITRE 1 - ENVIRONNEMENT ET METHODOLOGIE
@@ -201,8 +195,7 @@ Les biblioth\`eques utilis\'ees sont \texttt{pandas} (chargement, exploration,
 \texttt{scatter\_matrix}), \texttt{scikit-learn} (\texttt{LinearRegression},
 \texttt{PolynomialFeatures}, \texttt{StandardScaler}, \texttt{SelectKBest},
 m\'etriques) et \texttt{matplotlib} (figures, backend \texttt{Agg}).
-Versions utilis\'ees : \apc{reporter la sortie de python --version et de pip freeze
-pour numpy, pandas, scikit-learn et matplotlib}.
+Les versions de Python et des bibliothèques utilisées sont indiquées sur la capture de la figure~\ref{fig:shot_e01}.
 
 \shot{e_01_versions.png}{versions de Python et des biblioth\`eques}{fig:shot_e01}
 \shot{e_02_tree_and_data.png}{arborescence du d\'ep\^ot et contenu de \texttt{data/raw/}}{fig:shot_e02}
@@ -305,9 +298,7 @@ Le jeu \emph{Assurance} contient \PartOneInsuranceRows{} observations et
 \PartOneInsuranceCols{} colonnes, avec \PartOneInsuranceMissing{} valeur(s) manquante(s)
 et \PartOneInsuranceDuplicates{} ligne(s) dupliqu\'ee(s).
 
-\apc{commenter la qualit\'e des donn\'ees : types attendus (num\'erique / cat\'egoriel),
-absence ou pr\'esence de valeurs manquantes, doublons \'eventuels et traitement
-appliqu\'e}
+Aucune valeur manquante n'est à traiter dans les deux jeux (effectifs ci-dessus). Les statistiques des tableaux~\ref{tab:p1_salary_describe} et~\ref{tab:p1_insurance_describe} ne portent que sur les colonnes lues comme numériques : \texttt{YearsExperience} et \texttt{Salary} d'une part, \texttt{age}, \texttt{bmi}, \texttt{children} et \texttt{charges} d'autre part. Dans le jeu Assurance, \texttt{sex}, \texttt{smoker} et \texttt{region} sont catégorielles (tableau~\ref{tab:p1_insurance_categorical}) et sont encodées à la Partie~3. La ligne dupliquée du jeu Assurance a été conservée : les scripts n'appliquent aucune déduplication, et une seule ligne sur \PartOneInsuranceRows{} a un effet négligeable.
 
 \shot{p1_00_columns_check.png}{v\'erification des colonnes des deux jeux (\texttt{df.columns})}{fig:shot_p100}
 \shot{p1_01_salary_head_describe.png}{\texttt{head}, \texttt{info} et \texttt{describe} du jeu Salaire}{fig:shot_p101}
@@ -329,12 +320,9 @@ appliqu\'e}
   \item pour les variables cat\'egorielles, v\'erifier l'\'equilibre des modalit\'es.
 \end{itemize}
 
-\apc{interpr\'eter le tableau du jeu Salaire : \'etendue de l'exp\'erience et des salaires,
-sym\'etrie (moyenne contre m\'ediane), dispersion}
+Le jeu Salaire est de petite taille (\PartOneSalaryRows{} observations). L'expérience s'étend de 1,1 à 10,5 ans (moyenne 5,31 ; médiane 4,7 ; écart-type 2,84) et le salaire de 37\,731 à 122\,391 (moyenne 76\,003 ; médiane 65\,237 ; écart-type 27\,414). Pour les deux variables la moyenne dépasse la médiane : l'asymétrie à droite est légère pour l'expérience (écart d'environ 13\,\% de la médiane) et un peu plus nette pour le salaire (environ 17\,\%). L'écart-type du salaire représente environ 36\,\% de sa moyenne, soit une dispersion marquée que l'expérience peut en partie expliquer. Le maximum (122\,391) n'est qu'à environ 21\,800 du troisième quartile (100\,545), moins d'un écart-type : aucune valeur extrême isolée n'apparaît.
 
-\apc{interpr\'eter le tableau du jeu Assurance : asym\'etrie de \texttt{charges} (moyenne
-contre m\'ediane), plage d'\^age et de \texttt{bmi}, r\'epartition de \texttt{smoker},
-\texttt{sex} et \texttt{region}}
+Âge : de 18 à 64 ans, moyenne (39,2) et médiane (39) presque identiques, donc distribution symétrique sur une population d'âge actif. IMC (\texttt{bmi}) : de 15,96 à 53,13, moyenne 30,66 et médiane 30,40 proches (écart-type 6,10), également symétrique ; une moyenne voisine de 30 correspond au seuil usuel de l'obésité. \texttt{children} : de 0 à 5, médiane 1 et troisième quartile 2, la majorité des assurés ayant donc au plus deux enfants. La cible \texttt{charges} se distingue : sa moyenne (13\,270) dépasse nettement sa médiane (9\,382), d'environ 41\,\%, son écart-type (12\,110) dépasse 90\,\% de la moyenne et son maximum (63\,770) vaut près de quatre fois le troisième quartile (16\,640) : la distribution est fortement asymétrique à droite, avec une longue queue de charges élevées. Côté catégories (tableau~\ref{tab:p1_insurance_categorical}), \texttt{sex} (50,5\,\% d'hommes) et \texttt{region} (24,2 à 27,2\,\% par modalité) sont équilibrées, alors que \texttt{smoker} est déséquilibrée (79,5\,\% de non-fumeurs, 20,5\,\% de fumeurs). Ce groupe minoritaire est une explication plausible de la queue haute de \texttt{charges}, hypothèse que la corrélation de 0,78 entre \texttt{smoker\_yes} et \texttt{charges}, mesurée à la Partie~3, va dans le sens de confirmer.
 
 \section{Nuage de points Exp\'erience / Salaire}
 
@@ -349,8 +337,7 @@ Le coefficient de corr\'elation de Pearson entre l'exp\'erience et le salaire va
 $r=\PartOneSalaryCorr$. Un $r$ proche de $+1$ indique une relation lin\'eaire croissante
 forte ; proche de $0$, une absence de relation lin\'eaire ; un nuage qui suit une courbe
 plut\^ot qu'une droite signalerait une relation non lin\'eaire.
-\apc{conclure : sens et force de la relation, aspect lin\'eaire du nuage (figure~\ref{fig:p1_salary}),
-points \'eloign\'es de la tendance, et ce que cela implique pour une r\'egression lin\'eaire simple}
+Avec $r=\PartOneSalaryCorr$, la relation entre expérience et salaire est positive et très forte : le salaire augmente avec l'expérience, et $r^2\approx 0{,}957$ indique qu'environ 96\,\% de la variance du salaire est associée à une relation linéaire avec l'expérience sur l'ensemble des \PartOneSalaryRows{} observations. Une telle valeur est compatible avec un nuage resserré autour d'une droite (figure~\ref{fig:p1_salary}), ce qui justifie une régression linéaire simple à la Partie~2. Le coefficient de Pearson ne mesure toutefois que la part linéaire de la relation : il ne détecte pas à lui seul une courbure ni des points isolés. Les résultats de la Partie~2 (chapitre~\ref{chap:p2}) vont dans le sens de cette conclusion, avec un $R^2$ de test supérieur à 0,9.
 
 
 \section{Nuages de points du jeu Assurance (\texttt{scatter\_matrix})}
@@ -368,9 +355,7 @@ deux ; la diagonale montre la distribution de chaque variable. Les variables cat
 (\texttt{sex}, \texttt{smoker}, \texttt{region}) ne sont pas num\'eriques et sont
 trait\'ees \`a la partie suivante apr\`es encodage ; la couleur des points permet toutefois
 de visualiser l'effet de \texttt{smoker}.
-\apc{d\'ecrire les relations visibles entre \texttt{charges} et chaque variable
-(\texttt{age}, \texttt{bmi}, \texttt{children}), l'existence de groupes distincts selon
-\texttt{smoker}, et les variables qui semblent peu informatives}
+Les corrélations de Pearson avec \texttt{charges} calculées à la Partie~3 (jeu d'entraînement) chiffrent la dernière ligne de la matrice : \texttt{age} (0,28) et \texttt{bmi} (0,20) sont faiblement liés à \texttt{charges}, et \texttt{children} (0,07) est presque indépendant. La variable \texttt{smoker}, une fois encodée, a au contraire une corrélation de 0,78 avec \texttt{charges} : c'est de loin la plus informative, et la couleur des points permet de comparer fumeurs (rouge) et non-fumeurs (bleu) sur chaque nuage. Comme variable entière de 0 à 5, \texttt{children} produit des alignements de points par valeur, et sa corrélation de 0,07 en fait la variable numérique la moins informative.
 
 
 % =============================================================================
@@ -409,14 +394,13 @@ Ici, la pente est positive et vaut \PartTwoSlope{} : chaque année d'expérience
 
 \loadgen{part2_predictions.tex}
 
-\apc{rep\'erer dans le tableau les observations les mieux et les moins bien pr\'edites,
-et le signe dominant de l'erreur (sur-estimation ou sous-estimation)}
+Les erreurs (réel $-$ prédit) du tableau~\ref{tab:p2_predictions} portent sur six observations. Les mieux prédites sont celles de 3,7 ans ($-3\,001$), 9,6 ans ($-3\,155$) et 4,9 ans ($-3\,560$), toutes sur-estimées de 3\,000 à 3\,600 environ ; les moins bien prédites sont celles de 8,2 ans ($+11\,215$, soit environ 10\,\% du salaire réel de 113\,812), 3,2 ans ($+8\,967$) et 5,3 ans ($+7\,820$), toutes sous-estimées. Les signes sont équilibrés (trois sur-estimations, trois sous-estimations) et l'erreur moyenne vaut environ $+3\,048$, à comparer à la MAE de 6\,286 : il n'y a pas de biais systématique net, mais six observations ne permettent que des constats indicatifs.
 
 \section{Visualisation}
 
 \fig[0.85]{p2_regression_plot.png}{Droite de r\'egression, points d'entra\^inement, points de test et r\'esidus}{fig:p2_reg}
 
-\apc{d\'ecrire l'ajustement de la droite aux points de test et la longueur des r\'esidus}
+Les traits pointillés verticaux de la figure~\ref{fig:p2_reg} relient chaque point de test à la droite : leur longueur est exactement l'erreur du tableau~\ref{tab:p2_predictions}. Les plus longs correspondent aux observations à 8,2 ans (11\,215) et 3,2 ans (8\,967), les plus courts à 3,7 ans (3\,001). Ces écarts, de l'ordre de 3\,000 à 11\,000, sont à rapporter à une plage de salaires d'environ 85\,000 dans le jeu complet (de 37\,731 à 122\,391) : cela est cohérent avec le R² de test de \PartTwoRTwo, la droite suivant la tendance générale sans reproduire les écarts individuels.
 
 
 \section{\'Evaluation : MSE, RMSE, MAE}
@@ -469,7 +453,7 @@ muettes}). On obtient \PartThreeNFeatures{} variables explicatives.
 \texttt{smoker}, relations avec \texttt{bmi} et \texttt{age}}{fig:p3_eda}
 \fig[0.8]{p3_corr_heatmap.png}{Matrice de corr\'elation des variables encod\'ees}{fig:p3_corr}
 
-La distribution de \texttt{charges} est fortement asymétrique à droite (skewness \PartThreeSkew{}) et très dispersée : l'écart-type (\PartThreeTargetStd{}) dépasse 90\,\% de la moyenne (\PartThreeTargetMean{}). Quelques charges très élevées pèsent donc beaucoup dans les erreurs quadratiques (MSE, RMSE), et un modèle linéaire sur la cible brute aura du mal à les reproduire. Sur le jeu d'entraînement, la variable la plus liée à \texttt{charges} est de loin \texttt{smoker\_yes} (corrélation de Pearson d'environ 0,78), devant \texttt{age} (0,28) et \texttt{bmi} (0,20) ; \texttt{children} (0,07), \texttt{sex\_male} (0,06) et les indicatrices de région (au plus 0,07 en valeur absolue) sont très faiblement corrélées. \apc{vérifier sur les figures~\ref{fig:p3_eda} et~\ref{fig:p3_corr} la forme de l'histogramme, la séparation des charges selon \texttt{smoker} dans les nuages \texttt{bmi} et \texttt{age}, et l'absence de colinéarité forte entre variables explicatives}
+La distribution de \texttt{charges} est fortement asymétrique à droite (skewness \PartThreeSkew{}) et très dispersée : l'écart-type (\PartThreeTargetStd{}) dépasse 90\,\% de la moyenne (\PartThreeTargetMean{}). Quelques charges très élevées pèsent donc beaucoup dans les erreurs quadratiques (MSE, RMSE), et un modèle linéaire sur la cible brute aura du mal à les reproduire. Sur le jeu d'entraînement, la variable la plus liée à \texttt{charges} est de loin \texttt{smoker\_yes} (corrélation de Pearson d'environ 0,78), devant \texttt{age} (0,28) et \texttt{bmi} (0,20) ; \texttt{children} (0,07), \texttt{sex\_male} (0,06) et les indicatrices de région (au plus 0,07 en valeur absolue) sont très faiblement corrélées. La figure~\ref{fig:p3_eda} illustre ces constats (histogramme de \texttt{charges}, boîtes à moustaches selon \texttt{smoker}, nuages avec \texttt{bmi} et \texttt{age}) et la figure~\ref{fig:p3_corr} donne les corrélations de l'ensemble des variables encodées. Une limite de cette EDA : la colinéarité entre variables explicatives n'a pas été quantifiée (pas de facteur d'inflation de la variance) ; seule la figure~\ref{fig:p3_corr} permet de la repérer.
 
 \shot{p3_01_eda_terminal.png}{sorties de l'EDA dans le terminal}{fig:shot_p301}
 
@@ -554,9 +538,7 @@ Les trois coefficients sont positifs : à autres variables fixées, être fumeur
 La figure~\ref{fig:p3_pred} permet d'inspecter l'ajustement : si le mod\`ele est bien
 sp\'ecifi\'e, les points se r\'epartissent le long de la diagonale et les r\'esidus autour de
 z\'ero sans structure.
-\apc{d\'ecrire l'alignement sur la diagonale, la structure \'eventuelle des r\'esidus (groupes
-par \texttt{smoker}, variance croissante) et ce qu'elle r\'ev\`ele sur les limites d'un mod\`ele
-lin\'eaire \`a 3 variables}
+Sur les dix prédictions du tableau~\ref{tab:p3_predictions}, les erreurs vont de $-8\,015$ à $+6\,434$ (en valeur absolue de 105 à 8\,015). Les plus fortes concernent des charges élevées (29\,331 sur-estimée de 8\,015, soit 27\,\% ; 33\,750 sous-estimée de 6\,434, soit 19\,\%) mais aussi une charge faible (4\,536 prédite à 11\,117, soit une sur-estimation de plus de 140\,\%). Une prédiction (571 pour une charge réelle de 2\,117) est proche de zéro : le modèle linéaire n'est pas contraint à rester positif, et son intercept en unités d'origine est négatif ($-11\,708$). Ces écarts montrent qu'un modèle additif à trois variables ne capture pas toute la structure des charges. Une interaction entre \texttt{smoker} et \texttt{bmi} est une piste plausible (section~4.5), mais elle n'a pas été testée ici.
 
 \shot{p3_07_coefficients_terminal.png}{coefficients du mod\`ele (terminal)}{fig:shot_p307}
 
@@ -597,8 +579,7 @@ polynomiaux de degr\'e $d\in\{2,3,4\}$ :
 $\widehat{y}=\beta_0+\beta_1 x+\beta_2 x^2+\dots+\beta_d x^d$. Ce dernier reste
 \emph{lin\'eaire en ses param\`etres} : on construit les puissances de $x$ avec
 \texttt{PolynomialFeatures} puis on ajuste une \texttt{LinearRegression}. On s'attend a priori
-\`a une croissance non lin\'eaire du PIB, ce qu'un mod\`ele lin\'eaire ne peut pas capturer
-, et les résultats le confirment : le modèle linéaire n'atteint qu'un $R^2$ de \PartFourLinearRTwo{} sur le test, alors que les modèles polynomiaux montent bien plus haut (tableau~\ref{tab:p4_compare}).
+\`a une croissance non lin\'eaire du PIB, ce qu'un mod\`ele lin\'eaire ne peut pas capturer, et les résultats le confirment : le modèle linéaire n'atteint qu'un $R^2$ de \PartFourLinearRTwo{} sur le test, alors que les modèles polynomiaux montent bien plus haut (tableau~\ref{tab:p4_compare}).
 
 \paragraph{Stabilit\'e num\'erique.} La variable \texttt{Year} est standardis\'ee \`a
 l'int\'erieur de chaque pipeline (\texttt{StandardScaler} ajust\'e sur l'entra\^inement seul)
@@ -630,9 +611,9 @@ ann\'ees d'entra\^inement ; il ne mesure pas la capacit\'e du mod\`ele \`a pr\'e
 \fig{p4_comparison.png}{R\'egression lin\'eaire et polynomiale : ajustement sur la plage observ\'ee (gauche)
 et comportement hors des donn\'ees, axe $y$ born\'e (droite)}{fig:p4_cmp}
 
-\apc{d\'ecrire la figure~\ref{fig:p4_cmp} : la droite sous-estime ou sur-estime-t-elle
-syst\'ematiquement aux extr\'emit\'es~? quel degr\'e suit le mieux la courbure~? les courbes de
-degr\'e \'elev\'e oscillent-elles~?}
+Le tableau~\ref{tab:p4_predictions} chiffre le comportement des modèles de la figure~\ref{fig:p4_cmp} (panneau de gauche) aux onze années de test (en $10^{12}$ unités du CSV). La droite ne suit pas la forme du PIB : elle prédit des valeurs négatives en 1965, 1972 et 1973 ($-0{,}96$, $-0{,}20$ et $-0{,}09$ pour des valeurs réelles de 0,07 à 0,14), sur-estime nettement au milieu de la période (1,34 en 1986 pour 0,30 réel ; 2,99 en 2001 pour 1,33) puis sous-estime en fin de période (4,19 en 2012 pour 8,46 réel, soit environ la moitié). Sous-estimation aux deux extrémités et sur-estimation au milieu : c'est la signature d'une courbure que la droite ne peut pas représenter.
+
+Le degré~2 reste imparfait : il est négatif entre 1972 et 1979 ($-0{,}46$ à $-0{,}63$) et sous-estime encore 2012 (6,56). Le degré~3 donne des valeurs légèrement négatives en 1986 et 1991 ($-0{,}11$ et $-0{,}05$) et sous-estime 2012 (7,76). Le degré~4 est le plus proche des valeurs réelles en fin de période (8,05 en 2012) et ne présente qu'une valeur négative ($-0{,}09$ en 1965), mais ses prédictions ne sont pas monotones entre 1979 et 1992 (0,33 ; 0,36 ; 0,32 ; 0,33 pour des valeurs réelles croissantes de 0,18 à 0,42) : aux années de test, il oscille légèrement autour de la tendance, signe d'un degré élevé.
 
 
 \section{\'Evaluation et choix du degr\'e}
@@ -672,7 +653,7 @@ l'unit\'e de \texttt{Value} (unit\'es du CSV). La moyenne de la cible est \PartF
 absolue pèse beaucoup plus dans les premi\`eres ann\'ees que dans les derni\`eres : l'erreur
 relative par p\'eriode serait un compl\'ement utile.
 
-Le modèle linéaire est nettement insuffisant : sa RMSE de test (\PartFourLinearRMSE{}) n'est que 34\,\% inférieure à la référence naïve (\PartFourBaselineRMSE{}). Le modèle retenu (degré \PartFourChosenDegree{}) divise la RMSE par environ 9,6 (\PartFourChosenRMSE{}) et la MAE par environ 10 (\PartFourChosenMAE{}, contre \PartFourLinearMAE{} pour le linéaire) ; sa RMSE représente \PartFourChosenRMSEPct{} de la moyenne de la cible. L'erreur diminue de façon continue avec le degré : la RMSE de test passe de \PartFourLinearRMSE{} (linéaire) à \PartFourPolyTwoRMSE{} ($d=2$), \PartFourPolyThreeRMSE{} ($d=3$) puis \PartFourPolyFourRMSE{} ($d=4$), avec un $R^2$ de test de \PartFourPolyFourRTwo{} pour $d=4$. La règle de parcimonie ne favorise donc aucun degré plus faible : $d=3$ est environ 2,6 fois moins précis que $d=4$, bien au-delà de la tolérance de \PartFourTolPct{}. Comme les degrés supérieurs à 4 n'ont pas été testés, on ne peut pas affirmer que $d=4$ soit optimal. \apc{confirmer sur la figure~\ref{fig:p4_cmp} que le degré 4 suit la courbure sans oscillation visible dans la plage observée}
+Le modèle linéaire est nettement insuffisant : sa RMSE de test (\PartFourLinearRMSE{}) n'est que 34\,\% inférieure à la référence naïve (\PartFourBaselineRMSE{}). Le modèle retenu (degré \PartFourChosenDegree{}) divise la RMSE par environ 9,6 (\PartFourChosenRMSE{}) et la MAE par environ 10 (\PartFourChosenMAE{}, contre \PartFourLinearMAE{} pour le linéaire) ; sa RMSE représente \PartFourChosenRMSEPct{} de la moyenne de la cible. L'erreur diminue de façon continue avec le degré : la RMSE de test passe de \PartFourLinearRMSE{} (linéaire) à \PartFourPolyTwoRMSE{} ($d=2$), \PartFourPolyThreeRMSE{} ($d=3$) puis \PartFourPolyFourRMSE{} ($d=4$), avec un $R^2$ de test de \PartFourPolyFourRTwo{} pour $d=4$. La règle de parcimonie ne favorise donc aucun degré plus faible : $d=3$ est environ 2,6 fois moins précis que $d=4$, bien au-delà de la tolérance de \PartFourTolPct{}. Comme les degrés supérieurs à 4 n'ont pas été testés, on ne peut pas affirmer que $d=4$ soit optimal. Le tableau~\ref{tab:p4_predictions} nuance toutefois ce constat : aux années de test, le degré~4 présente de petites irrégularités (valeur négative en 1965, prédictions non monotones entre 1979 et 1992). Son plus grand écart absolu apparaît en fin de série ($-0{,}41$ en 2012 : 8,05 contre 8,46, soit $-4{,}8$\,\%), tandis qu'en début de série, où les valeurs sont proches de zéro, des écarts de l'ordre de 0,1 à 0,2 représentent une erreur relative élevée. Ces défauts sont de faible ampleur à l'échelle de la fin de période, mais ils invitent à ne pas considérer ce degré comme définitif.
 
 \paragraph{Sous-apprentissage ou sur-apprentissage.}
 \begin{itemize}
@@ -690,7 +671,7 @@ courbe peut diverger. Le panneau de droite de la figure~\ref{fig:p4_cmp} prolong
 mod\`eles de \PartFourExtrapYears{} ans. Les pr\'edictions pour l'ann\'ee \PartFourExtrapYear{}
 (en $10^{12}$ unit\'es du CSV) sont : lin\'eaire \PartFourLinearExtrap{}, $d=2$
 \PartFourPolyTwoExtrap{}, $d=3$ \PartFourPolyThreeExtrap{}, $d=4$ \PartFourPolyFourExtrap{}.
-Les quatre modèles divergent fortement hors de la plage : pour l'année \PartFourExtrapYear{}, la prédiction va de \PartFourLinearExtrap{} (linéaire) à \PartFourPolyFourExtrap{} ($d=4$), soit un rapport d'environ 5,7 entre la plus basse et la plus haute. Ils ne peuvent donc pas être tous plausibles, et le degré 4 donne la prédiction la plus élevée de toutes. Le degré retenu pour sa qualité d'ajustement ne doit pas servir à prévoir au-delà de la dernière année observée sans précautions (validation chronologique, modèle de croissance adapté). \apc{comparer ces valeurs à la dernière valeur observée du PIB (commande tail -n 1 data/raw/china\_gdp.csv) pour juger la plausibilité économique de chaque prédiction}
+Les quatre modèles divergent fortement hors de la plage : pour l'année \PartFourExtrapYear{}, la prédiction va de \PartFourLinearExtrap{} (linéaire) à \PartFourPolyFourExtrap{} ($d=4$), soit un rapport d'environ 5,7 entre la plus basse et la plus haute. Ils ne peuvent donc pas être tous plausibles, et le degré 4 donne la prédiction la plus élevée de toutes. Le degré retenu pour sa qualité d'ajustement ne doit pas servir à prévoir au-delà de la dernière année observée sans précautions (validation chronologique, modèle de croissance adapté). La dernière valeur réelle du tableau~\ref{tab:p4_predictions} est celle de 2012 : 8,46 (en $10^{12}$ unités du CSV). Rapportées à cette valeur, les prédictions pour 2024 valent environ 0,65 fois (linéaire, 5,51), 1,47 fois ($d=2$, 12,45), 2,58 fois ($d=3$, 21,80) et 3,72 fois ($d=4$, 31,49). Le modèle linéaire prédit donc pour 2024 une valeur inférieure à celle de 2012 alors que la série observée est croissante : cette prédiction est incohérente avec les données. Pour les polynômes, une hausse de 47\,\% ($d=2$) à 272\,\% ($d=4$) en douze ans n'est pas impossible, mais les données seules ne permettent pas de trancher, et la forme polynomiale n'est pas dérivée d'un modèle économique de croissance. Le degré~4 fournit la valeur la plus élevée, plus du triple de celle de 2012.
 
 \shot{p4_03_metrics.png}{m\'etriques MSE, RMSE et MAE des quatre mod\`eles (terminal)}{fig:shot_p403}
 \shot{p4_04_degree_selection.png}{s\'election du degr\'e et pr\'edictions hors donn\'ees (terminal)}{fig:shot_p404}
