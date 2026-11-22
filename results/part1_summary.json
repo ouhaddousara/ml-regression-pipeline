@@ -1,0 +1,41 @@
+{
+  "salary": {
+    "rows": 30,
+    "cols": 2,
+    "columns": [
+      "YearsExperience",
+      "Salary"
+    ],
+    "dtypes": {
+      "YearsExperience": "float64",
+      "Salary": "float64"
+    },
+    "missing_total": 0,
+    "duplicates": 0
+  },
+  "insurance": {
+    "rows": 1338,
+    "cols": 7,
+    "columns": [
+      "age",
+      "sex",
+      "bmi",
+      "children",
+      "smoker",
+      "region",
+      "charges"
+    ],
+    "dtypes": {
+      "age": "int64",
+      "sex": "str",
+      "bmi": "float64",
+      "children": "int64",
+      "smoker": "str",
+      "region": "str",
+      "charges": "float64"
+    },
+    "missing_total": 0,
+    "duplicates": 1
+  },
+  "salary_pearson_r": 0.9782416184887601
+}

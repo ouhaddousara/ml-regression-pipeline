@@ -1,0 +1,150 @@
+[salary] loaded data/raw/Salary_Data.csv -> shape (30, 2)
+[salary] columns found: ['YearsExperience', 'Salary']
+[insurance] loaded data/raw/insurance.csv -> shape (1338, 7)
+[insurance] columns found: ['age', 'sex', 'bmi', 'children', 'smoker', 'region', 'charges']
+
+==============================================================================
+Salary - exploration
+==============================================================================
+shape: (30, 2)
+
+-- head()
+   YearsExperience   Salary
+0              1.1  39343.0
+1              1.3  46205.0
+2              1.5  37731.0
+3              2.0  43525.0
+4              2.2  39891.0
+
+-- info()
+<class 'pandas.DataFrame'>
+RangeIndex: 30 entries, 0 to 29
+Data columns (total 2 columns):
+ #   Column           Non-Null Count  Dtype  
+---  ------           --------------  -----  
+ 0   YearsExperience  30 non-null     float64
+ 1   Salary           30 non-null     float64
+dtypes: float64(2)
+memory usage: 612.0 bytes
+
+-- missing values per column
+YearsExperience    0
+Salary             0
+dtype: int64
+
+duplicated rows: 0
+
+-- unique values per column
+YearsExperience    28
+Salary             30
+dtype: int64
+
+==============================================================================
+Insurance - exploration
+==============================================================================
+shape: (1338, 7)
+
+-- head()
+   age     sex     bmi  children smoker     region      charges
+0   19  female  27.900         0    yes  southwest  16884.92400
+1   18    male  33.770         1     no  southeast   1725.55230
+2   28    male  33.000         3     no  southeast   4449.46200
+3   33    male  22.705         0     no  northwest  21984.47061
+4   32    male  28.880         0     no  northwest   3866.85520
+
+-- info()
+<class 'pandas.DataFrame'>
+RangeIndex: 1338 entries, 0 to 1337
+Data columns (total 7 columns):
+ #   Column    Non-Null Count  Dtype  
+---  ------    --------------  -----  
+ 0   age       1338 non-null   int64  
+ 1   sex       1338 non-null   str    
+ 2   bmi       1338 non-null   float64
+ 3   children  1338 non-null   int64  
+ 4   smoker    1338 non-null   str    
+ 5   region    1338 non-null   str    
+ 6   charges   1338 non-null   float64
+dtypes: float64(2), int64(2), str(3)
+memory usage: 73.3 KB
+
+-- missing values per column
+age         0
+sex         0
+bmi         0
+children    0
+smoker      0
+region      0
+charges     0
+dtype: int64
+
+duplicated rows: 1
+
+-- unique values per column
+age           47
+sex            2
+bmi          548
+children       6
+smoker         2
+region         4
+charges     1337
+dtype: int64
+
+==============================================================================
+salary - describe() (numeric columns)
+==============================================================================
+                 count          mean           std      min       25%      50%        75%       max
+YearsExperience   30.0      5.313333      2.837888      1.1      3.20      4.7       7.70      10.5
+Salary            30.0  76003.000000  27414.429785  37731.0  56720.75  65237.0  100544.75  122391.0
+[latex] saved report/generated/part1_salary_describe.tex
+
+==============================================================================
+insurance - describe() (numeric columns)
+==============================================================================
+           count          mean           std        min         25%       50%           75%          max
+age       1338.0     39.207025     14.049960    18.0000    27.00000    39.000     51.000000     64.00000
+bmi       1338.0     30.663397      6.098187    15.9600    26.29625    30.400     34.693750     53.13000
+children  1338.0      1.094918      1.205493     0.0000     0.00000     1.000      2.000000      5.00000
+charges   1338.0  13270.422265  12110.011237  1121.8739  4740.28715  9382.033  16639.912515  63770.42801
+[latex] saved report/generated/part1_insurance_describe.tex
+
+==============================================================================
+Insurance - categorical columns (value counts)
+==============================================================================
+
+sex:
+sex
+male      676
+female    662
+Name: count, dtype: int64
+
+smoker:
+smoker
+no     1064
+yes     274
+Name: count, dtype: int64
+
+region:
+region
+southeast    364
+southwest    325
+northwest    325
+northeast    324
+Name: count, dtype: int64
+[latex] saved report/generated/part1_insurance_categorical.tex
+
+==============================================================================
+Item 3 - scatter plot Experience / Salary
+==============================================================================
+
+Pearson correlation YearsExperience vs Salary: 0.9782
+[figure] saved report/figures/p1_salary_scatter.png
+
+==============================================================================
+Item 4 - scatter_matrix of the Insurance features
+==============================================================================
+[figure] saved report/figures/p1_insurance_scatter_matrix.png
+[results] saved results/part1_summary.json
+[latex] saved report/generated/part1_stats.tex
+
+Part 1 finished.
