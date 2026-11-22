@@ -1,0 +1,786 @@
+% =============================================================================
+% Atelier 1 - Regression  |  Rapport LaTeX
+% Compilation (depuis report/) :
+%     latexmk -pdf -interaction=nonstopmode -outdir=build main.tex
+% Tous les chiffres viennent de report/generated/*.tex (produits par src/*.py).
+% Les phrases qui dependent de ces chiffres sont marquees par \apc{...}
+% (rendu : [A COMPLETER APRES EXECUTION : ...]). Pour les retrouver :
+%     grep -n '\\apc{' main.tex
+% =============================================================================
+\documentclass[11pt,a4paper]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Atelier 1 -- Régression},pdfauthor={Sara Ouhaddou}}
+
+\linespread{1.1}
+\setlength{\parskip}{0.4em}
+\setlength{\parindent}{0pt}
+\Urlmuskip=0mu plus 1mu\relax
+\makeatletter\g@addto@macro\UrlBreaks{\do\-\do\_}\makeatother
+\setlength{\emergencystretch}{3em}
+\captionsetup{font=small,labelfont=bf}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Atelier 1 -- R\'egression}
+\fancyhead[R]{\small\nouppercase{\leftmark}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  frame=single,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  keywordstyle=\color{blue!60!black},
+  commentstyle=\color{green!35!black},
+  stringstyle=\color{orange!70!black},
+  numbers=none,
+  language=Python
+}
+
+% ----------------------------------------------------------------------------
+% Parametres de la page de garde
+% ----------------------------------------------------------------------------
+\newcommand{\AuteurRapport}{Sara Ouhaddou}
+\newcommand{\AnneeUniv}{2026/2027}
+
+% ----------------------------------------------------------------------------
+% Marqueur des phrases dependantes des chiffres
+% ----------------------------------------------------------------------------
+\newcommand{\apc}[1]{\textbf{\textcolor{red!70!black}{[\`A COMPL\'ETER APR\`ES EX\'ECUTION: #1]}}}
+
+% ----------------------------------------------------------------------------
+% Valeurs par defaut des macros generees : le document compile AVANT que les
+% scripts aient tourne. Les fichiers report/generated/*.tex les redefinissent.
+% ----------------------------------------------------------------------------
+\makeatletter
+\newcommand{\defaultmacros}[1]{%
+  \@for\@tmpname:=#1\do{%
+    \expandafter\providecommand\csname\@tmpname\endcsname{\textbf{[?]}}}}
+\makeatother
+\defaultmacros{PartFourBaselineRMSE,PartFourBestTestRMSE,PartFourChosenDegree,PartFourChosenExtrap,PartFourChosenMAE,PartFourChosenMAEPct,PartFourChosenMSE,PartFourChosenRMSE,PartFourChosenRMSEPct,PartFourChosenRTwo,PartFourChosenTrainMAE,PartFourChosenTrainMSE,PartFourChosenTrainRMSE,PartFourChosenTrainRTwo,PartFourExtrapYear,PartFourExtrapYears,PartFourLinearExtrap,PartFourLinearMAE,PartFourLinearMAEPct,PartFourLinearMSE,PartFourLinearRMSE,PartFourLinearRMSEPct,PartFourLinearRTwo,PartFourLinearTrainMAE,PartFourLinearTrainMSE,PartFourLinearTrainRMSE,PartFourLinearTrainRTwo,PartFourNTest,PartFourNTrain,PartFourPolyFourExtrap,PartFourPolyFourMAE,PartFourPolyFourMAEPct,PartFourPolyFourMSE,PartFourPolyFourRMSE,PartFourPolyFourRMSEPct,PartFourPolyFourRTwo,PartFourPolyFourTrainMAE,PartFourPolyFourTrainMSE,PartFourPolyFourTrainRMSE,PartFourPolyFourTrainRTwo,PartFourPolyThreeExtrap,PartFourPolyThreeMAE,PartFourPolyThreeMAEPct,PartFourPolyThreeMSE,PartFourPolyThreeRMSE,PartFourPolyThreeRMSEPct,PartFourPolyThreeRTwo,PartFourPolyThreeTrainMAE,PartFourPolyThreeTrainMSE,PartFourPolyThreeTrainRMSE,PartFourPolyThreeTrainRTwo,PartFourPolyTwoExtrap,PartFourPolyTwoMAE,PartFourPolyTwoMAEPct,PartFourPolyTwoMSE,PartFourPolyTwoRMSE,PartFourPolyTwoRMSEPct,PartFourPolyTwoRTwo,PartFourPolyTwoTrainMAE,PartFourPolyTwoTrainMSE,PartFourPolyTwoTrainRMSE,PartFourPolyTwoTrainRTwo,PartFourTargetMean,PartFourTargetStd,PartFourTolPct,PartFourYearMax,PartFourYearMin,PartOneInsuranceCols,PartOneInsuranceDuplicates,PartOneInsuranceMissing,PartOneInsuranceRows,PartOneSalaryCols,PartOneSalaryCorr,PartOneSalaryMissing,PartOneSalaryRows,PartThreeBaselineRMSE,PartThreeFeatureOne,PartThreeFeatureThree,PartThreeFeatureTwo,PartThreeIntercept,PartThreeInterceptOrig,PartThreeMAE,PartThreeMAEPct,PartThreeMSE,PartThreeMaxScalingDiff,PartThreeNFeatures,PartThreeNTest,PartThreeNTrain,PartThreeRMSE,PartThreeRMSEPct,PartThreeRTwo,PartThreeSkew,PartThreeTargetMean,PartThreeTargetStd,PartThreeTrainMAE,PartThreeTrainMSE,PartThreeTrainRMSE,PartThreeTrainRTwo,PartTwoBaselineRMSE,PartTwoIntercept,PartTwoMAE,PartTwoMAEPct,PartTwoMSE,PartTwoNTest,PartTwoNTrain,PartTwoRMSE,PartTwoRMSEPct,PartTwoRTwo,PartTwoSlope,PartTwoTargetMean,PartTwoTargetStd,PartTwoTrainMAE,PartTwoTrainMSE,PartTwoTrainRMSE,PartTwoTrainRTwo}
+
+% ----------------------------------------------------------------------------
+% Gardes sur les fichiers
+% ----------------------------------------------------------------------------
+% \loadgen{fichier.tex} : inclut report/generated/fichier.tex s'il existe.
+\newcommand{\loadgen}[1]{%
+  \IfFileExists{generated/#1}{\input{generated/#1}}{%
+    \par\noindent\fbox{\parbox{0.94\linewidth}{\small Fichier g\'en\'er\'e absent :
+    \texttt{\detokenize{generated/#1}}. Lancer \texttt{make all} puis recompiler.}}\par}}
+
+% \fig[largeur]{fichier.png}{legende}{label} : figure produite par les scripts.
+\newcommand{\fig}[4][0.95]{%
+  \IfFileExists{figures/#2}{%
+    \begin{figure}[htbp]\centering
+      \includegraphics[width=#1\linewidth]{figures/#2}
+      \caption{#3}\label{#4}
+    \end{figure}}{%
+    \par\noindent\fbox{\parbox{0.94\linewidth}{\small Figure absente :
+    \texttt{\detokenize{figures/#2}}. Lancer le script correspondant.}}\par\label{#4}}}
+
+% \shot{fichier.png}{legende}{label} : capture optionnelle (report/screenshots/).
+% Si le fichier n'existe pas, rien n'est affiche (voir docs/SCREENSHOTS.md).
+\newcommand{\shot}[3]{%
+  \IfFileExists{screenshots/#1}{%
+    \begin{figure}[htbp]\centering
+      \includegraphics[width=0.96\linewidth,height=0.40\textheight,keepaspectratio]{screenshots/#1}
+      \caption{Capture d'\'ecran : #2}\label{#3}
+    \end{figure}}{}}
+
+\begin{document}
+
+% =============================================================================
+% PAGE DE GARDE
+% =============================================================================
+\begin{titlepage}
+  \centering
+  {\large \textsc{Universit\'e Abdelmalek Essaadi}\par}
+  {\large Facult\'e des Sciences et Techniques de Tanger\par}
+  {\large D\'epartement G\'enie Informatique\par}
+  \vspace{0.6cm}
+  {\large Cycle Ing\'enieur : LSI S3\par}
+  \vspace{2.2cm}
+  {\Large \textbf{Machine Learning}\par}
+  \vspace{0.8cm}
+  \rule{\linewidth}{0.6pt}\par\vspace{0.5cm}
+  {\Huge \textbf{Atelier 1 \guillemotleft{}\,R\'egression\,\guillemotright}\par}
+  \vspace{0.4cm}
+  {\large R\'egression lin\'eaire simple, multiple et polynomiale\par}
+  \vspace{0.3cm}\rule{\linewidth}{0.6pt}\par
+  \vspace{2.5cm}
+  \begin{tabular}{rl}
+    \textbf{R\'ealis\'e par :} & \AuteurRapport \\[0.4em]
+    \textbf{Encadrant :} & Pr.\ El Aachak Lotfi \\[0.4em]
+    \textbf{Ann\'ee universitaire :} & \AnneeUniv
+  \end{tabular}
+  \vfill
+  {\small Code source, donn\'ees de r\'ef\'erence et scripts :
+   \texttt{github.com/ouhaddousara}\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+
+% =============================================================================
+% INTRODUCTION
+% =============================================================================
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+\markboth{Introduction}{Introduction}
+
+L'objectif de cet atelier est de pratiquer les deux grandes familles de la
+r\'egression --- la r\'egression lin\'eaire simple et la r\'egression lin\'eaire
+multiple --- ainsi que son extension polynomiale, sur trois jeux de donn\'ees :
+\emph{Exp\'erience / Salaire}, \emph{Assurance} (Insurance) et \emph{PIB de la Chine}
+(China GDP). Les outils impos\'es sont Python, pandas, scikit-learn et matplotlib.
+
+Le travail est organis\'e en quatre parties, qui correspondent aux chapitres de ce
+rapport :
+\begin{itemize}
+  \item \textbf{Partie 1} (chapitre~\ref{chap:p1}) : exploration et visualisation des donn\'ees
+        (r\'esum\'e statistique, nuage de points, \texttt{scatter\_matrix}) ;
+  \item \textbf{Partie 2} (chapitre~\ref{chap:p2}) : r\'egression lin\'eaire simple sur le
+        jeu Exp\'erience / Salaire ;
+  \item \textbf{Partie 3} (chapitre~\ref{chap:p3}) : r\'egression lin\'eaire multiple sur le
+        jeu Assurance (EDA, s\'election de variables, standardisation) ;
+  \item \textbf{Partie 4} (chapitre~\ref{chap:p4}) : r\'egression lin\'eaire et polynomiale sur
+        le jeu China GDP, avec comparaison des mod\`eles.
+\end{itemize}
+
+\paragraph{Principe de r\'edaction.} Aucun chiffre de ce rapport n'est saisi \`a la main :
+les m\'etriques, les tableaux et les valeurs cit\'ees dans le texte sont inject\'es
+automatiquement depuis les fichiers produits par les scripts du d\'ep\^ot
+(\texttt{report/generated/}). Le texte pr\'esente le cadre de raisonnement ; les
+phrases d'interpr\'etation qui d\'ependent des valeurs obtenues sont rep\'er\'ees en rouge
+par la mention \apc{\ldots} et se compl\`etent apr\`es ex\'ecution.
+
+% =============================================================================
+% CHAPITRE 1 - ENVIRONNEMENT ET METHODOLOGIE
+% =============================================================================
+\chapter{Environnement et m\'ethodologie g\'en\'erale}
+\label{chap:env}
+
+\section{Environnement de travail}
+
+Le projet est un d\'ep\^ot reproductible organis\'e comme suit :
+
+\begin{lstlisting}[language={}]
+src/       utils.py, part1_eda.py, part2_simple_regression.py,
+           part3_multiple_regression.py, part4_polynomial_regression.py
+data/raw/  jeux de donnees (non versionnes)
+results/   metrics (JSON), predictions (CSV), logs/partN.txt
+report/    main.tex, figures/, generated/, screenshots/
+Makefile   setup, data, part1..part4, all, report, clean
+\end{lstlisting}
+
+Les biblioth\`eques utilis\'ees sont \texttt{pandas} (chargement, exploration,
+\texttt{scatter\_matrix}), \texttt{scikit-learn} (\texttt{LinearRegression},
+\texttt{PolynomialFeatures}, \texttt{StandardScaler}, \texttt{SelectKBest},
+m\'etriques) et \texttt{matplotlib} (figures, backend \texttt{Agg}).
+Versions utilis\'ees : \apc{reporter la sortie de python --version et de pip freeze
+pour numpy, pandas, scikit-learn et matplotlib}.
+
+\shot{e_01_versions.png}{versions de Python et des biblioth\`eques}{fig:shot_e01}
+\shot{e_02_tree_and_data.png}{arborescence du d\'ep\^ot et contenu de \texttt{data/raw/}}{fig:shot_e02}
+
+\section{Jeux de donn\'ees}
+
+\begin{table}[htbp]
+\centering\small
+\caption{Jeux de donn\'ees et colonnes attendues (hypoth\`eses v\'erifi\'ees au chargement)}
+\label{tab:datasets}
+\begin{tabular}{p{2.8cm}p{4.2cm}p{6.2cm}}
+\toprule
+Jeu & Source & Colonnes attendues \\
+\midrule
+Exp\'erience / Salaire & Kaggle \url{rohankayan/years-of-experience-and-salary-dataset}
+  & \texttt{YearsExperience}, \texttt{Salary} \\
+Assurance & Kaggle \url{sinaasappel/tutorial-multiple-regression}
+  & \texttt{age}, \texttt{sex}, \texttt{bmi}, \texttt{children}, \texttt{smoker},
+    \texttt{region}, \texttt{charges} \\
+China GDP & Fichier CSV de l'\'enonc\'e (IBM Cognitive Class)
+  & \texttt{Year}, \texttt{Value} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Les noms de colonnes du tableau~\ref{tab:datasets} sont des \emph{hypoth\`eses} : chaque
+script affiche \texttt{df.columns} au chargement et s'arr\^ete avec un message explicite
+si une colonne attendue est absente, plut\^ot que de supposer silencieusement un nom.
+La vérification effectuée sur les fichiers réellement utilisés est illustrée par la capture du chapitre~\ref{chap:p1} : les trois jeux ont été chargés sans erreur par les scripts, ce qui confirme la présence de toutes les colonnes attendues (\texttt{YearsExperience} et \texttt{Salary} ; les sept colonnes du jeu Assurance (les variables encodées de la Partie~3 reprennent \texttt{age}, \texttt{bmi}, \texttt{children}, \texttt{sex}, \texttt{smoker} et \texttt{region}, la cible étant \texttt{charges}) ; \texttt{Year} et \texttt{Value}).
+
+\section{Protocole d'\'evaluation}
+
+\paragraph{D\'ecoupage.} Une seule convention est utilis\'ee dans toutes les parties :
+\texttt{train\_\allowbreak test\_\allowbreak split(test\_\allowbreak size=0.2, random\_\allowbreak state=42)}, soit 80\,\% des
+observations pour l'entra\^inement et 20\,\% pour le test. Un d\'ecoupage unique et fix\'e
+rend les parties comparables et les r\'esultats reproductibles.
+
+\paragraph{M\'etriques.} Pour $n$ observations de test, de valeurs r\'eelles $y_i$ et de
+pr\'edictions $\hat{y}_i$ :
+\begin{align*}
+  \mathrm{MSE}  &= \frac{1}{n}\sum_{i=1}^{n}\left(y_i-\hat{y}_i\right)^2, &
+  \mathrm{RMSE} &= \sqrt{\mathrm{MSE}}, &
+  \mathrm{MAE}  &= \frac{1}{n}\sum_{i=1}^{n}\left|y_i-\hat{y}_i\right|.
+\end{align*}
+Le coefficient de d\'etermination $R^2 = 1 - \sum_i (y_i-\hat{y}_i)^2 / \sum_i (y_i-\bar{y})^2$
+est ajout\'e \`a titre compl\'ementaire.
+
+\paragraph{Lecture des m\'etriques.}
+\begin{itemize}
+  \item La \textbf{MSE} s'exprime dans le \emph{carr\'e} de l'unit\'e de la cible ; elle
+        est difficile \`a lire directement mais p\'enalise fortement les grosses erreurs.
+  \item La \textbf{RMSE} revient \`a l'unit\'e de la cible : c'est l'ordre de grandeur de
+        l'erreur typique, avec un poids plus fort pour les erreurs importantes.
+  \item La \textbf{MAE} est l'erreur absolue moyenne, dans l'unit\'e de la cible ; elle est
+        moins sensible aux valeurs aberrantes.
+  \item Si $\mathrm{RMSE}\gg\mathrm{MAE}$, quelques erreurs sont beaucoup plus grandes
+        que les autres ; si $\mathrm{RMSE}\approx\mathrm{MAE}$, les erreurs sont homog\`enes.
+  \item Une erreur n'a de sens qu'\`a l'\'echelle de la cible : on la compare \`a la
+        moyenne et \`a l'\'ecart-type de la cible, et \`a une \emph{r\'ef\'erence na\"ive}
+        (pr\'edire toujours la moyenne d'entra\^inement, dont la RMSE est not\'ee
+        \guillemotleft\,baseline\,\guillemotright{}). Un mod\`ele utile doit faire nettement mieux que cette r\'ef\'erence.
+\end{itemize}
+
+\paragraph{Sous-apprentissage et sur-apprentissage.} On compare les erreurs
+d'entra\^inement et de test :
+\begin{itemize}
+  \item \emph{sous-apprentissage} : erreurs \'elev\'ees \`a la fois sur l'entra\^inement et le
+        test (mod\`ele trop simple pour la structure des donn\'ees) ;
+  \item \emph{sur-apprentissage} : erreur d'entra\^inement tr\`es inf\'erieure \`a l'erreur de
+        test (le mod\`ele m\'emorise le bruit) ;
+  \item \emph{bon compromis} : erreurs faibles et proches sur les deux jeux.
+\end{itemize}
+Avec des jeux de petite taille, l'estimation sur un seul d\'ecoupage reste bruit\'ee ;
+cette limite est rappel\'ee dans la conclusion.
+
+% =============================================================================
+% CHAPITRE 2 - PARTIE 1
+% =============================================================================
+\chapter{Partie 1 : exploration et visualisation des donn\'ees}
+\label{chap:p1}
+\loadgen{part1_stats.tex}
+
+Script : \texttt{src/part1\_eda.py} (sortie : \texttt{results/logs/part1.txt}).
+
+\section{Exploration avec pandas}
+
+Pour chaque jeu, le script affiche les premi\`eres lignes (\texttt{head}), les types et
+les valeurs non nulles (\texttt{info}), les valeurs manquantes, les doublons et le nombre
+de valeurs distinctes par colonne.
+
+\begin{lstlisting}
+df = load_dataset("salary")        # checks df.columns, fails loudly if a column is missing
+print(df.head()); df.info()
+print(df.isna().sum()); print(df.duplicated().sum()); print(df.nunique())
+\end{lstlisting}
+
+Le jeu \emph{Salaire} contient \PartOneSalaryRows{} observations et
+\PartOneSalaryCols{} colonnes, avec \PartOneSalaryMissing{} valeur(s) manquante(s).
+Le jeu \emph{Assurance} contient \PartOneInsuranceRows{} observations et
+\PartOneInsuranceCols{} colonnes, avec \PartOneInsuranceMissing{} valeur(s) manquante(s)
+et \PartOneInsuranceDuplicates{} ligne(s) dupliqu\'ee(s).
+
+\apc{commenter la qualit\'e des donn\'ees : types attendus (num\'erique / cat\'egoriel),
+absence ou pr\'esence de valeurs manquantes, doublons \'eventuels et traitement
+appliqu\'e}
+
+\shot{p1_00_columns_check.png}{v\'erification des colonnes des deux jeux (\texttt{df.columns})}{fig:shot_p100}
+\shot{p1_01_salary_head_describe.png}{\texttt{head}, \texttt{info} et \texttt{describe} du jeu Salaire}{fig:shot_p101}
+\shot{p1_02_insurance_head_describe.png}{\texttt{head}, \texttt{info} et \texttt{describe} du jeu Assurance}{fig:shot_p102}
+
+\section{R\'esum\'e statistique et interpr\'etation}
+
+\loadgen{part1_salary_describe.tex}
+\loadgen{part1_insurance_describe.tex}
+\loadgen{part1_insurance_categorical.tex}
+
+\paragraph{Grille de lecture.} Pour chaque variable num\'erique :
+\begin{itemize}
+  \item comparer la moyenne (\texttt{mean}) et la m\'ediane (\texttt{50\%}) : un \'ecart
+        important signale une distribution asym\'etrique ;
+  \item rapporter l'\'ecart-type (\texttt{std}) \`a la moyenne pour juger la dispersion ;
+  \item lire le minimum et le maximum par rapport aux quartiles pour rep\'erer des valeurs
+        extr\^emes ;
+  \item pour les variables cat\'egorielles, v\'erifier l'\'equilibre des modalit\'es.
+\end{itemize}
+
+\apc{interpr\'eter le tableau du jeu Salaire : \'etendue de l'exp\'erience et des salaires,
+sym\'etrie (moyenne contre m\'ediane), dispersion}
+
+\apc{interpr\'eter le tableau du jeu Assurance : asym\'etrie de \texttt{charges} (moyenne
+contre m\'ediane), plage d'\^age et de \texttt{bmi}, r\'epartition de \texttt{smoker},
+\texttt{sex} et \texttt{region}}
+
+\section{Nuage de points Exp\'erience / Salaire}
+
+\begin{lstlisting}
+df.plot.scatter(x="YearsExperience", y="Salary", ax=ax)
+r = df["YearsExperience"].corr(df["Salary"])    # Pearson correlation
+\end{lstlisting}
+
+\fig[0.8]{p1_salary_scatter.png}{Nuage de points Exp\'erience / Salaire}{fig:p1_salary}
+
+Le coefficient de corr\'elation de Pearson entre l'exp\'erience et le salaire vaut
+$r=\PartOneSalaryCorr$. Un $r$ proche de $+1$ indique une relation lin\'eaire croissante
+forte ; proche de $0$, une absence de relation lin\'eaire ; un nuage qui suit une courbe
+plut\^ot qu'une droite signalerait une relation non lin\'eaire.
+\apc{conclure : sens et force de la relation, aspect lin\'eaire du nuage (figure~\ref{fig:p1_salary}),
+points \'eloign\'es de la tendance, et ce que cela implique pour une r\'egression lin\'eaire simple}
+
+
+\section{Nuages de points du jeu Assurance (\texttt{scatter\_matrix})}
+
+\begin{lstlisting}
+from pandas.plotting import scatter_matrix
+scatter_matrix(df[["age", "bmi", "children", "charges"]], diagonal="hist", c=colors)
+\end{lstlisting}
+
+\fig{p1_insurance_scatter_matrix.png}{\texttt{scatter\_matrix} des variables num\'eriques du jeu Assurance
+(points color\'es selon \texttt{smoker})}{fig:p1_matrix}
+
+La matrice (figure~\ref{fig:p1_matrix}) croise toutes les variables num\'eriques deux \`a
+deux ; la diagonale montre la distribution de chaque variable. Les variables cat\'egorielles
+(\texttt{sex}, \texttt{smoker}, \texttt{region}) ne sont pas num\'eriques et sont
+trait\'ees \`a la partie suivante apr\`es encodage ; la couleur des points permet toutefois
+de visualiser l'effet de \texttt{smoker}.
+\apc{d\'ecrire les relations visibles entre \texttt{charges} et chaque variable
+(\texttt{age}, \texttt{bmi}, \texttt{children}), l'existence de groupes distincts selon
+\texttt{smoker}, et les variables qui semblent peu informatives}
+
+
+% =============================================================================
+% CHAPITRE 3 - PARTIE 2
+% =============================================================================
+\chapter{Partie 2 : r\'egression lin\'eaire simple (Exp\'erience / Salaire)}
+\label{chap:p2}
+\loadgen{part2_metrics.tex}
+
+Script : \texttt{src/part2\_simple\_regression.py}.
+
+\section{Mod\`ele et entra\^inement}
+
+Le mod\`ele \`a une variable explicative $x$ (\texttt{YearsExperience}) s'\'ecrit
+$\widehat{y} = \beta_0 + \beta_1 x$, o\`u $\beta_0$ et $\beta_1$ minimisent la somme des
+carr\'es des r\'esidus sur le jeu d'entra\^inement (moindres carr\'es ordinaires).
+
+\begin{lstlisting}
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = LinearRegression().fit(X_train, y_train)
+pred_test = model.predict(X_test)
+\end{lstlisting}
+
+Le jeu d'entra\^inement compte \PartTwoNTrain{} observations et le jeu de test
+\PartTwoNTest{}. Le mod\`ele appris est :
+\begin{center}
+  Salaire pr\'edit $=$ \PartTwoIntercept{} $+$ \PartTwoSlope{} $\times$ ann\'ees d'exp\'erience.
+\end{center}
+La pente s'interpr\`ete comme la variation moyenne du salaire pour une ann\'ee d'exp\'erience
+suppl\'ementaire, l'ordonn\'ee \`a l'origine comme le salaire pr\'edit \`a exp\'erience nulle.
+Ici, la pente est positive et vaut \PartTwoSlope{} : chaque année d'expérience supplémentaire est associée, en moyenne, à une hausse du salaire de cet ordre (en unités du jeu de données), ce qui est cohérent avec un salaire qui croît avec l'expérience. L'ordonnée à l'origine (\PartTwoIntercept{}) est le salaire prédit à expérience nulle ; c'est une extrapolation si le jeu ne contient pas d'observations proches de zéro année d'expérience, et on la lit comme le terme qui cale la droite plutôt que comme un salaire d'entrée observé.
+
+\shot{p2_01_coefficients_predictions.png}{ajustement du mod\`ele et pr\'edictions (terminal)}{fig:shot_p201}
+
+\section{Pr\'edictions sur le jeu de test}
+
+\loadgen{part2_predictions.tex}
+
+\apc{rep\'erer dans le tableau les observations les mieux et les moins bien pr\'edites,
+et le signe dominant de l'erreur (sur-estimation ou sous-estimation)}
+
+\section{Visualisation}
+
+\fig[0.85]{p2_regression_plot.png}{Droite de r\'egression, points d'entra\^inement, points de test et r\'esidus}{fig:p2_reg}
+
+\apc{d\'ecrire l'ajustement de la droite aux points de test et la longueur des r\'esidus}
+
+
+\section{\'Evaluation : MSE, RMSE, MAE}
+
+Le tableau~\ref{tab:p2_metrics} donne les m\'etriques sur l'entra\^inement et sur le test.
+Sur le test : $\mathrm{MSE}=\PartTwoMSE$, $\mathrm{RMSE}=\PartTwoRMSE$,
+$\mathrm{MAE}=\PartTwoMAE$ et $R^2=\PartTwoRTwo$.
+
+\paragraph{Interpr\'etation en unit\'es et en \'echelle.} La RMSE et la MAE sont exprim\'ees
+dans l'unit\'e du salaire du jeu de donn\'ees. Le salaire moyen est de \PartTwoTargetMean{}
+(\'ecart-type \PartTwoTargetStd{}) : l'erreur quadratique typique repr\'esente donc
+\PartTwoRMSEPct{} de la moyenne et l'erreur absolue moyenne \PartTwoMAEPct{}. La r\'ef\'erence
+na\"ive (pr\'edire la moyenne d'entra\^inement) a une RMSE de \PartTwoBaselineRMSE{}.
+
+À l'échelle du salaire moyen (\PartTwoTargetMean{}), l'erreur est modérée : la RMSE de test (\PartTwoRMSE{}) représente \PartTwoRMSEPct{} de la moyenne. Le modèle bat nettement la référence naïve : sa RMSE est environ 3,4 fois plus faible que celle de la moyenne d'entraînement (\PartTwoBaselineRMSE{}). La MAE (\PartTwoMAE{}) est proche de la RMSE (rapport d'environ 1,12), ce qui indique des erreurs plutôt homogènes, sans quelques erreurs très grandes qui domineraient. Avec $R^2=\PartTwoRTwo$, l'expérience seule explique environ 90\,\% de la variance des salaires du jeu de test.
+
+\paragraph{Sous-apprentissage ou sur-apprentissage.} La RMSE d'entra\^inement vaut
+\PartTwoTrainRMSE{} et celle de test \PartTwoRMSE{} ($R^2$ : \PartTwoTrainRTwo{} contre
+\PartTwoRTwo{}).
+La RMSE de test dépasse celle d'entraînement d'environ 36\,\% et le $R^2$ passe de \PartTwoTrainRTwo{} à \PartTwoRTwo{}. Cet écart va dans le sens attendu (un modèle est en général un peu meilleur sur les données qu'il a vues) et reste modéré : les deux jeux présentent des erreurs faibles et un $R^2$ élevé, ce qui exclut le sous-apprentissage. Un modèle à deux paramètres ajusté sur \PartTwoNTrain{} observations ne peut guère sur-apprendre, et rien n'indique un sur-apprentissage. La différence, mesurée sur seulement \PartTwoNTest{} observations de test, est cependant peu stable : un autre découpage pourrait la réduire ou l'accroître.
+
+\shot{p2_03_metrics.png}{m\'etriques MSE, RMSE et MAE (terminal)}{fig:shot_p203}
+
+% =============================================================================
+% CHAPITRE 4 - PARTIE 3
+% =============================================================================
+\chapter{Partie 3 : r\'egression lin\'eaire multiple (Assurance)}
+\label{chap:p3}
+\loadgen{part3_metrics.tex}
+
+Script : \texttt{src/part3\_multiple\_regression.py}. La cible est \texttt{charges}.
+
+\section{Analyse exploratoire (EDA)}
+
+L'EDA combine : structure du jeu (types, manquants, doublons), distribution de la cible,
+effet des variables cat\'egorielles, relations avec les variables num\'eriques et matrice de
+corr\'elation sur les variables encod\'ees.
+
+\paragraph{Encodage.} Les variables cat\'egorielles (\texttt{sex}, \texttt{smoker},
+\texttt{region}) sont transform\'ees par encodage \emph{one-hot} avec
+\texttt{drop\_first=True} : chaque variable \`a $k$ modalit\'es donne $k-1$ colonnes
+binaires, ce qui \'evite la colin\'earit\'e parfaite entre colonnes (le \emph{pi\`ege des variables
+muettes}). On obtient \PartThreeNFeatures{} variables explicatives.
+
+\paragraph{Cible.} L'asym\'etrie (\emph{skewness}) de \texttt{charges} vaut
+\PartThreeSkew. Une valeur nettement positive indique une distribution \'etal\'ee vers la droite
+(quelques charges tr\`es \'elev\'ees).
+
+\fig{p3_eda_overview.png}{Vue d'ensemble de l'EDA : distribution de \texttt{charges}, effet de
+\texttt{smoker}, relations avec \texttt{bmi} et \texttt{age}}{fig:p3_eda}
+\fig[0.8]{p3_corr_heatmap.png}{Matrice de corr\'elation des variables encod\'ees}{fig:p3_corr}
+
+La distribution de \texttt{charges} est fortement asymétrique à droite (skewness \PartThreeSkew{}) et très dispersée : l'écart-type (\PartThreeTargetStd{}) dépasse 90\,\% de la moyenne (\PartThreeTargetMean{}). Quelques charges très élevées pèsent donc beaucoup dans les erreurs quadratiques (MSE, RMSE), et un modèle linéaire sur la cible brute aura du mal à les reproduire. Sur le jeu d'entraînement, la variable la plus liée à \texttt{charges} est de loin \texttt{smoker\_yes} (corrélation de Pearson d'environ 0,78), devant \texttt{age} (0,28) et \texttt{bmi} (0,20) ; \texttt{children} (0,07), \texttt{sex\_male} (0,06) et les indicatrices de région (au plus 0,07 en valeur absolue) sont très faiblement corrélées. \apc{vérifier sur les figures~\ref{fig:p3_eda} et~\ref{fig:p3_corr} la forme de l'histogramme, la séparation des charges selon \texttt{smoker} dans les nuages \texttt{bmi} et \texttt{age}, et l'absence de colinéarité forte entre variables explicatives}
+
+\shot{p3_01_eda_terminal.png}{sorties de l'EDA dans le terminal}{fig:shot_p301}
+
+\section{S\'election de 3 variables}
+
+\paragraph{M\'ethodes.} Trois crit\`eres compl\'ementaires sont calcul\'es sur le jeu
+d'entra\^inement uniquement (pour que le jeu de test n'influence pas le choix) :
+\begin{enumerate}
+  \item la valeur absolue de la \textbf{corr\'elation de Pearson} avec la cible (mesure
+        lin\'eaire univari\'ee) ;
+  \item le \textbf{score $F$} de \texttt{SelectKBest(f\_regression)} (test de significativit\'e
+        d'une relation lin\'eaire univari\'ee, avec $p$-value) ;
+  \item l'\textbf{information mutuelle} (\texttt{mutual\_info\_regression}), qui capte aussi
+        des d\'ependances non lin\'eaires.
+\end{enumerate}
+\paragraph{R\`egle de d\'ecision.} Chaque variable re\c{c}oit un rang par crit\`ere ; on retient
+les 3 variables au meilleur rang moyen (\'egalit\'es d\'epartag\'ees par la plus forte
+$|r|$). Les trois variables retenues sont : \PartThreeFeatureOne{}, \PartThreeFeatureTwo{} et
+\PartThreeFeatureThree{}.
+
+\begin{lstlisting}
+f_sel  = SelectKBest(score_func=f_regression, k="all").fit(X_train, y_train)
+mi_sel = SelectKBest(score_func=mi_func,      k="all").fit(X_train, y_train)
+abs_corr = X_train.corrwith(y_train).abs()
+\end{lstlisting}
+
+\loadgen{part3_feature_selection.tex}
+\fig{p3_feature_scores.png}{Scores de s\'election pour les trois crit\`eres (variables retenues en rouge)}{fig:p3_scores}
+
+Les trois critères s'accordent sur le haut du classement. \texttt{smoker\_yes} est 1\textsuperscript{er} en corrélation (0,78) et en score $F$ ($F\approx 1\,660$, $p<10^{-200}$), et 2\textsuperscript{e} en information mutuelle ; \texttt{age} est 2\textsuperscript{e} en corrélation et en $F$ ($F\approx 92$, $p\approx 6\times10^{-21}$) et 1\textsuperscript{er} en information mutuelle ; \texttt{bmi} est 3\textsuperscript{e} en corrélation et en $F$ ($F\approx 43$, $p\approx 7\times10^{-11}$) mais seulement 5\textsuperscript{e} en information mutuelle. Les trois variables retenues sont significatives à un seuil très strict ($p<10^{-10}$), alors que les suivantes le sont beaucoup moins (\texttt{children} : $p\approx 0{,}019$ ; \texttt{region\_southeast} : $p\approx 0{,}027$ ; \texttt{sex\_male} : $p\approx 0{,}063$, non significative à 5\,\% ; les deux autres indicatrices de région : $p>0{,}25$).
+
+Le choix de \texttt{bmi} contre \texttt{children} est le plus serré : leurs rangs moyens sont proches (3,67 contre 4,00) et \texttt{children} devance \texttt{bmi} en information mutuelle ($0{,}14$ contre $0{,}10$). \texttt{bmi} l'emporte toutefois nettement sur les deux critères linéaires (corrélation 0,20 contre 0,07 ; $F\approx 43$ contre $F\approx 5{,}5$), ce qui convient à un modèle de régression linéaire, et ce choix est cohérent avec l'EDA, où ces trois variables sont les plus corrélées à \texttt{charges}. Enfin, l'information mutuelle de \texttt{age} (1,40) est près de 4 fois celle de \texttt{smoker\_yes} : ces valeurs sont estimées différemment pour les variables continues et discrètes, et l'on s'appuie donc surtout sur les rangs.
+
+\shot{p3_04_feature_selection_terminal.png}{scores de s\'election de variables (terminal)}{fig:shot_p304}
+
+\section{Standardisation}
+
+\paragraph{Choix : \texttt{StandardScaler} (centrage-r\'eduction).} Les variables retenues
+vivent sur des \'echelles tr\`es diff\'erentes (par exemple des ann\'ees, un indice, une
+variable binaire 0/1). La standardisation $z=(x-\mu)/\sigma$ ram\`ene chaque variable \`a
+moyenne nulle et variance unitaire, ce qui :
+\begin{itemize}
+  \item rend les coefficients comparables (effet d'une variation d'un \'ecart-type) ;
+  \item n'impose pas de bornes fixes, contrairement \`a la normalisation min-max, dont
+        les bornes sont dict\'ees par les valeurs extr\^emes ;
+  \item centre l'intercept (pr\'ediction pour un profil moyen) et am\'eliore le
+        conditionnement num\'erique.
+\end{itemize}
+
+\paragraph{Absence de fuite de donn\'ees.} Le \texttt{StandardScaler} est ajust\'e
+(\texttt{fit}) sur le jeu d'entra\^inement seulement, puis appliqu\'e (\texttt{transform}) au
+test avec les m\^emes param\`etres : aucune statistique du test ne pr\'ec\`ede l'entra\^inement.
+
+\paragraph{Remarque honn\^ete.} Pour une r\'egression lin\'eaire par moindres carr\'es,
+les pr\'edictions sont invariantes par changement d'\'echelle affine des variables : la
+standardisation n'am\'eliore donc pas la pr\'ecision de ce mod\`ele, elle am\'eliore la
+lisibilit\'e des coefficients (et serait d\'ecisive pour des m\'ethodes r\'egularis\'ees ou
+\`a base de distance). Le script le v\'erifie : l'\'ecart maximal entre les pr\'edictions
+avec et sans standardisation vaut \PartThreeMaxScalingDiff.
+
+\begin{lstlisting}
+scaler = StandardScaler().fit(X_train[selected])           # fit on train only
+X_train_s = scaler.transform(X_train[selected])
+X_test_s  = scaler.transform(X_test[selected])             # same parameters on test
+\end{lstlisting}
+
+\shot{p3_06_scaler_terminal.png}{param\`etres du \texttt{StandardScaler} (terminal)}{fig:shot_p306}
+
+\section{Mod\`ele, coefficients et pr\'edictions}
+
+\loadgen{part3_coefficients.tex}
+
+L'intercept vaut \PartThreeIntercept{} dans l'espace standardis\'e et \PartThreeInterceptOrig{}
+dans les unit\'es d'origine. Le jeu d'entra\^inement compte \PartThreeNTrain{} observations et
+le jeu de test \PartThreeNTest{}.
+Les trois coefficients sont positifs : à autres variables fixées, être fumeur, être plus âgé ou avoir un IMC plus élevé augmente les charges prédites. En unités d'origine, \texttt{smoker\_yes} ajoute environ 23\,675 aux charges (écart fumeur / non-fumeur), chaque année d'âge environ 259 et chaque point d'IMC environ 326. En unités standardisées (effet d'une hausse d'un écart-type), \texttt{smoker\_yes} domine (environ $+9\,568$), devant \texttt{age} ($+3\,649$, pour un écart-type de 14,1 ans) et \texttt{bmi} ($+1\,972$, pour un écart-type de 6,0) ; ce classement confirme celui des scores de sélection. L'intercept standardisé (\PartThreeIntercept{}) est la charge prédite pour un profil moyen (c'est la moyenne des charges d'entraînement, propriété de la régression à variables centrées). L'intercept en unités d'origine (\PartThreeInterceptOrig{}) est négatif car il correspond à un non-fumeur d'âge et d'IMC nuls, un profil impossible : il n'a pas d'interprétation concrète.
+
+\loadgen{part3_predictions.tex}
+
+\fig{p3_actual_vs_predicted.png}{Valeurs r\'eelles contre pr\'edites (gauche) et r\'esidus (droite), jeu de test}{fig:p3_pred}
+
+La figure~\ref{fig:p3_pred} permet d'inspecter l'ajustement : si le mod\`ele est bien
+sp\'ecifi\'e, les points se r\'epartissent le long de la diagonale et les r\'esidus autour de
+z\'ero sans structure.
+\apc{d\'ecrire l'alignement sur la diagonale, la structure \'eventuelle des r\'esidus (groupes
+par \texttt{smoker}, variance croissante) et ce qu'elle r\'ev\`ele sur les limites d'un mod\`ele
+lin\'eaire \`a 3 variables}
+
+\shot{p3_07_coefficients_terminal.png}{coefficients du mod\`ele (terminal)}{fig:shot_p307}
+
+\section{\'Evaluation : MSE, RMSE, MAE}
+
+Sur le test : $\mathrm{MSE}=\PartThreeMSE$, $\mathrm{RMSE}=\PartThreeRMSE$,
+$\mathrm{MAE}=\PartThreeMAE$ et $R^2=\PartThreeRTwo$ (tableau~\ref{tab:p3_metrics}).
+
+\paragraph{Interpr\'etation en unit\'es et en \'echelle.} Les erreurs sont exprim\'ees dans
+l'unit\'e de \texttt{charges}. La moyenne de la cible est \PartThreeTargetMean{}
+(\'ecart-type \PartThreeTargetStd{}) ; la RMSE de test en repr\'esente \PartThreeRMSEPct{} et
+la MAE \PartThreeMAEPct{}. La r\'ef\'erence na\"ive a une RMSE de \PartThreeBaselineRMSE{}.
+Les erreurs restent importantes à l'échelle de la cible : la RMSE de test (\PartThreeRMSE{}) représente \PartThreeRMSEPct{} de la charge moyenne et la MAE (\PartThreeMAE{}) \PartThreeMAEPct{}. Le modèle fait néanmoins mieux que la référence naïve : sa RMSE est environ 53\,\% plus faible que celle de la moyenne d'entraînement (\PartThreeBaselineRMSE{}). La RMSE dépasse la MAE d'environ 38\,\% : quelques grosses erreurs, correspondant aux charges les plus élevées (asymétrie de la cible), pèsent davantage dans la RMSE. Avec $R^2=\PartThreeRTwo$, le modèle explique environ 78\,\% de la variance des charges sur le jeu de test ; il reste donc environ 22\,\% de variance non expliquée.
+
+\paragraph{Sous-apprentissage ou sur-apprentissage.} RMSE d'entra\^inement :
+\PartThreeTrainRMSE{} ; RMSE de test : \PartThreeRMSE{} ($R^2$ : \PartThreeTrainRTwo{} contre
+\PartThreeRTwo{}). Un mod\`ele lin\'eaire \`a 3 variables a peu de param\`etres : le risque
+de sur-apprentissage est faible, celui de sous-apprentissage (structure non lin\'eaire ou
+variables omises) est plus plausible.
+La RMSE de test (\PartThreeRMSE{}) est légèrement inférieure à celle d'entraînement (\PartThreeTrainRMSE{}), et le $R^2$ de test (\PartThreeRTwo{}) légèrement supérieur à celui d'entraînement (\PartThreeTrainRTwo{}) : il n'y a pas de sur-apprentissage, les deux jeux sont proches. Cet écart favorable au test tient au hasard du découpage (\PartThreeNTest{} observations de test un peu plus faciles en moyenne) et ne traduit pas une meilleure généralisation. En revanche, un $R^2$ d'environ 0,74 à 0,78 avec une erreur de \PartThreeRMSEPct{} de la moyenne signale une limite de type sous-apprentissage : le modèle ne capture pas toute la structure. Pistes plausibles, à vérifier : variables écartées (\texttt{children}, \texttt{sex}, \texttt{region}), interaction \texttt{smoker}\,$\times$\,\texttt{bmi}, et transformation de la cible (par exemple le logarithme) pour réduire l'effet de l'asymétrie.
+
+\shot{p3_09_metrics.png}{m\'etriques MSE, RMSE et MAE (terminal)}{fig:shot_p309}
+
+% =============================================================================
+% CHAPITRE 5 - PARTIE 4
+% =============================================================================
+\chapter{Partie 4 : r\'egression lin\'eaire et polynomiale (China GDP)}
+\label{chap:p4}
+\loadgen{part4_metrics.tex}
+
+Script : \texttt{src/part4\_polynomial\_regression.py}. La variable explicative est
+\texttt{Year} (de \PartFourYearMin{} \`a \PartFourYearMax{}) et la cible \texttt{Value}.
+
+\section{Mod\`eles compar\'es}
+
+Le mod\`ele lin\'eaire $\widehat{y}=\beta_0+\beta_1 x$ est compar\'e \`a des mod\`eles
+polynomiaux de degr\'e $d\in\{2,3,4\}$ :
+$\widehat{y}=\beta_0+\beta_1 x+\beta_2 x^2+\dots+\beta_d x^d$. Ce dernier reste
+\emph{lin\'eaire en ses param\`etres} : on construit les puissances de $x$ avec
+\texttt{PolynomialFeatures} puis on ajuste une \texttt{LinearRegression}. On s'attend a priori
+\`a une croissance non lin\'eaire du PIB, ce qu'un mod\`ele lin\'eaire ne peut pas capturer
+, et les résultats le confirment : le modèle linéaire n'atteint qu'un $R^2$ de \PartFourLinearRTwo{} sur le test, alors que les modèles polynomiaux montent bien plus haut (tableau~\ref{tab:p4_compare}).
+
+\paragraph{Stabilit\'e num\'erique.} La variable \texttt{Year} est standardis\'ee \`a
+l'int\'erieur de chaque pipeline (\texttt{StandardScaler} ajust\'e sur l'entra\^inement seul)
+avant \texttt{PolynomialFeatures} : sans cela, $\mathrm{Year}^4$ atteint environ $10^{13}$ et la
+matrice du probl\`eme est tr\`es mal conditionn\'ee.
+
+\begin{lstlisting}
+for d in [2, 3, 4]:
+    models[f"poly{d}"] = make_pipeline(
+        StandardScaler(),
+        PolynomialFeatures(degree=d, include_bias=False),
+        LinearRegression())
+\end{lstlisting}
+
+Le jeu d'entra\^inement compte \PartFourNTrain{} observations et le jeu de test \PartFourNTest{}.
+\`A noter : le d\'ecoupage est al\'eatoire, donc le test est \emph{interpol\'e} entre des
+ann\'ees d'entra\^inement ; il ne mesure pas la capacit\'e du mod\`ele \`a pr\'edire le futur.
+
+\shot{p4_01_models_terminal.png}{coefficients des mod\`eles lin\'eaire et polynomiaux (terminal)}{fig:shot_p401}
+
+\section{Pr\'edictions sur le jeu de test}
+
+\loadgen{part4_predictions.tex}
+
+\shot{p4_02_test_predictions.png}{pr\'edictions de test des quatre mod\`eles (terminal)}{fig:shot_p402}
+
+\section{Visualisation des deux familles de mod\`eles}
+
+\fig{p4_comparison.png}{R\'egression lin\'eaire et polynomiale : ajustement sur la plage observ\'ee (gauche)
+et comportement hors des donn\'ees, axe $y$ born\'e (droite)}{fig:p4_cmp}
+
+\apc{d\'ecrire la figure~\ref{fig:p4_cmp} : la droite sous-estime ou sur-estime-t-elle
+syst\'ematiquement aux extr\'emit\'es~? quel degr\'e suit le mieux la courbure~? les courbes de
+degr\'e \'elev\'e oscillent-elles~?}
+
+
+\section{\'Evaluation et choix du degr\'e}
+
+Le tableau~\ref{tab:p4_metrics} donne MSE, RMSE, MAE et $R^2$ de chaque mod\`ele sur
+l'entra\^inement et sur le test.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Comparaison synth\'etique des mod\`eles de la Partie 4}
+\label{tab:p4_compare}
+\begin{tabular}{lrrrr}
+\toprule
+Mod\`ele & RMSE (test) & MAE (test) & $R^2$ (test) & RMSE (train) \\
+\midrule
+Lin\'eaire & \PartFourLinearRMSE & \PartFourLinearMAE & \PartFourLinearRTwo & \PartFourLinearTrainRMSE \\
+Polynomial $d=2$ & \PartFourPolyTwoRMSE & \PartFourPolyTwoMAE & \PartFourPolyTwoRTwo & \PartFourPolyTwoTrainRMSE \\
+Polynomial $d=3$ & \PartFourPolyThreeRMSE & \PartFourPolyThreeMAE & \PartFourPolyThreeRTwo & \PartFourPolyThreeTrainRMSE \\
+Polynomial $d=4$ & \PartFourPolyFourRMSE & \PartFourPolyFourMAE & \PartFourPolyFourRTwo & \PartFourPolyFourTrainRMSE \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Crit\`ere explicite de choix du degr\'e.} Parmi les degr\'es 2, 3 et 4, on retient
+le \emph{plus petit} degr\'e dont la RMSE de test est inf\'erieure ou \'egale \`a la meilleure
+RMSE polynomiale major\'ee de \PartFourTolPct{} (r\`egle de parcimonie : \`a performance
+comparable, le mod\`ele le plus simple g\'en\'eralise mieux). La meilleure RMSE de test
+polynomiale est \PartFourBestTestRMSE{} ; le degr\'e retenu est \textbf{$d=\PartFourChosenDegree$}.
+Ce choix utilise le jeu de test (comme le demande l'\'enonc\'e) : l'erreur de test du
+mod\`ele retenu est donc l\'eg\`erement optimiste ; une validation crois\'ee serait plus rigoureuse.
+
+\paragraph{Interpr\'etation en unit\'es et en \'echelle.} Les erreurs sont exprim\'ees dans
+l'unit\'e de \texttt{Value} (unit\'es du CSV). La moyenne de la cible est \PartFourTargetMean{}
+(\'ecart-type \PartFourTargetStd{}) ; pour le mod\`ele retenu, la RMSE de test repr\'esente
+\PartFourChosenRMSEPct{} de la moyenne. La r\'ef\'erence na\"ive a une RMSE de
+\PartFourBaselineRMSE{}. Comme le PIB cro\^it fortement sur la p\'eriode, une m\^eme erreur
+absolue pèse beaucoup plus dans les premi\`eres ann\'ees que dans les derni\`eres : l'erreur
+relative par p\'eriode serait un compl\'ement utile.
+
+Le modèle linéaire est nettement insuffisant : sa RMSE de test (\PartFourLinearRMSE{}) n'est que 34\,\% inférieure à la référence naïve (\PartFourBaselineRMSE{}). Le modèle retenu (degré \PartFourChosenDegree{}) divise la RMSE par environ 9,6 (\PartFourChosenRMSE{}) et la MAE par environ 10 (\PartFourChosenMAE{}, contre \PartFourLinearMAE{} pour le linéaire) ; sa RMSE représente \PartFourChosenRMSEPct{} de la moyenne de la cible. L'erreur diminue de façon continue avec le degré : la RMSE de test passe de \PartFourLinearRMSE{} (linéaire) à \PartFourPolyTwoRMSE{} ($d=2$), \PartFourPolyThreeRMSE{} ($d=3$) puis \PartFourPolyFourRMSE{} ($d=4$), avec un $R^2$ de test de \PartFourPolyFourRTwo{} pour $d=4$. La règle de parcimonie ne favorise donc aucun degré plus faible : $d=3$ est environ 2,6 fois moins précis que $d=4$, bien au-delà de la tolérance de \PartFourTolPct{}. Comme les degrés supérieurs à 4 n'ont pas été testés, on ne peut pas affirmer que $d=4$ soit optimal. \apc{confirmer sur la figure~\ref{fig:p4_cmp} que le degré 4 suit la courbure sans oscillation visible dans la plage observée}
+
+\paragraph{Sous-apprentissage ou sur-apprentissage.}
+\begin{itemize}
+  \item Mod\`ele lin\'eaire : RMSE train \PartFourLinearTrainRMSE{}, test \PartFourLinearRMSE{}.
+        Les erreurs sont élevées et très proches sur les deux jeux ($R^2$ : \PartFourLinearTrainRTwo{} contre \PartFourLinearRTwo{}) : c'est un sous-apprentissage (modèle trop simple pour la courbure des données), pas un sur-apprentissage.
+  \item Mod\`eles polynomiaux : RMSE train/test de \PartFourPolyTwoTrainRMSE{}/\PartFourPolyTwoRMSE{}
+        ($d=2$), \PartFourPolyThreeTrainRMSE{}/\PartFourPolyThreeRMSE{} ($d=3$) et
+        \PartFourPolyFourTrainRMSE{}/\PartFourPolyFourRMSE{} ($d=4$).
+        Pour les trois degrés, la RMSE de test est inférieure ou égale à celle d'entraînement (par exemple $d=4$ : \PartFourPolyFourRMSE{} contre \PartFourPolyFourTrainRMSE{}) : aucun écart défavorable au test ne se creuse avec le degré, donc aucun signe de sur-apprentissage sur ce découpage. Ce constat est toutefois limité : les \PartFourNTest{} années de test sont tirées au hasard dans la même plage que l'entraînement, et ne mesurent donc que la qualité de l'interpolation. L'erreur d'entraînement diminue mécaniquement avec le degré ; seule l'erreur de test est informative, et le vrai risque des degrés élevés se situe hors de la plage observée (voir ci-dessous).
+\end{itemize}
+
+\paragraph{Risque d'extrapolation.} Un polynôme n'est fiable que dans la plage des
+donn\'ees d'entra\^inement : hors de cette plage, les termes de haut degr\'e dominent et la
+courbe peut diverger. Le panneau de droite de la figure~\ref{fig:p4_cmp} prolonge les
+mod\`eles de \PartFourExtrapYears{} ans. Les pr\'edictions pour l'ann\'ee \PartFourExtrapYear{}
+(en $10^{12}$ unit\'es du CSV) sont : lin\'eaire \PartFourLinearExtrap{}, $d=2$
+\PartFourPolyTwoExtrap{}, $d=3$ \PartFourPolyThreeExtrap{}, $d=4$ \PartFourPolyFourExtrap{}.
+Les quatre modèles divergent fortement hors de la plage : pour l'année \PartFourExtrapYear{}, la prédiction va de \PartFourLinearExtrap{} (linéaire) à \PartFourPolyFourExtrap{} ($d=4$), soit un rapport d'environ 5,7 entre la plus basse et la plus haute. Ils ne peuvent donc pas être tous plausibles, et le degré 4 donne la prédiction la plus élevée de toutes. Le degré retenu pour sa qualité d'ajustement ne doit pas servir à prévoir au-delà de la dernière année observée sans précautions (validation chronologique, modèle de croissance adapté). \apc{comparer ces valeurs à la dernière valeur observée du PIB (commande tail -n 1 data/raw/china\_gdp.csv) pour juger la plausibilité économique de chaque prédiction}
+
+\shot{p4_03_metrics.png}{m\'etriques MSE, RMSE et MAE des quatre mod\`eles (terminal)}{fig:shot_p403}
+\shot{p4_04_degree_selection.png}{s\'election du degr\'e et pr\'edictions hors donn\'ees (terminal)}{fig:shot_p404}
+
+% =============================================================================
+% CONCLUSION
+% =============================================================================
+\chapter*{Conclusion g\'en\'erale}
+\addcontentsline{toc}{chapter}{Conclusion g\'en\'erale}
+\markboth{Conclusion g\'en\'erale}{Conclusion g\'en\'erale}
+
+Cet atelier a men\'e trois r\'egressions de bout en bout avec une cha\^ine enti\`erement
+reproductible : chargement d\'efensif des donn\'ees, d\'ecoupage unique
+(\texttt{test\_size=0.2}, \texttt{random\_state=42}), entra\^inement, pr\'ediction, figures et
+m\'etriques inject\'ees automatiquement dans le rapport.
+
+\begin{itemize}
+  \item \textbf{Partie 2} (simple) : RMSE de test \PartTwoRMSE{}, MAE \PartTwoMAE{},
+        $R^2=\PartTwoRTwo$.
+  \item \textbf{Partie 3} (multiple, variables retenues : \PartThreeFeatureOne{},
+        \PartThreeFeatureTwo{}, \PartThreeFeatureThree{}) : RMSE de test \PartThreeRMSE{}, MAE
+        \PartThreeMAE{}, $R^2=\PartThreeRTwo$.
+  \item \textbf{Partie 4} (lin\'eaire contre polynomial) : degr\'e retenu
+        $d=\PartFourChosenDegree$, RMSE de test \PartFourChosenRMSE{} contre
+        \PartFourLinearRMSE{} pour le mod\`ele lin\'eaire.
+\end{itemize}
+
+À l'échelle de sa cible, la Partie~2 présente la plus faible erreur relative (RMSE de \PartTwoRMSEPct{} de la moyenne), la Partie~4 le meilleur $R^2$ (\PartFourChosenRTwo{}, RMSE de \PartFourChosenRMSEPct{} de la moyenne) et la Partie~3 la moins bonne précision (RMSE de \PartThreeRMSEPct{} de la moyenne, $R^2=\PartThreeRTwo$). Trois enseignements se dégagent : (i) la complexité du modèle doit suivre la forme de la relation : la droite suffit pour le salaire mais sous-apprend le PIB ; (ii) dans la Partie~3, la variable catégorielle \texttt{smoker} est de loin la plus informative (coefficient standardisé le plus fort, corrélation d'environ 0,78), ce qui justifie son encodage, tandis que l'asymétrie de \texttt{charges} et les variables écartées limitent un modèle linéaire à trois variables ; (iii) un meilleur ajustement sur la plage observée ne garantit rien hors de cette plage : à l'horizon \PartFourExtrapYear{}, les prédictions des quatre modèles divergent fortement.
+
+\paragraph{Limites.}
+\begin{itemize}
+  \item Un seul d\'ecoupage train/test : les m\'etriques d\'ependent de ce tirage, surtout sur
+        le jeu Salaire (peu d'observations). Une validation crois\'ee consoliderait les r\'esultats.
+  \item Le degr\'e polynomial est choisi sur le jeu de test ; l'erreur du mod\`ele retenu est
+        l\'eg\`erement optimiste.
+  \item Le d\'ecoupage al\'eatoire d'une s\'erie temporelle (Partie 4) ne mesure pas la qualit\'e
+        d'une pr\'evision ; un d\'ecoupage chronologique serait plus exigeant.
+  \item Les modèles lin\'eaires supposent une relation additive et lin\'eaire (apr\`es
+        transformation) entre variables explicatives et cible.
+\end{itemize}
+
+% =============================================================================
+% REFERENCES
+% =============================================================================
+\begin{thebibliography}{99}
+\addcontentsline{toc}{chapter}{R\'ef\'erences}
+\bibitem{becominghuman}
+  \'Enonc\'e de l'atelier, r\'ef\'erence 1 : \emph{Implementing and visualizing linear regression in Python with scikit-learn}.\\
+  \url{https://becominghuman.ai/implementing-and-visualizing-linear-regression-in-python-with-scikit-learn-a073768dc688}
+\bibitem{kaggletuto}
+  \'Enonc\'e de l'atelier, r\'ef\'erence 2 : \emph{Tutorial -- Multiple Regression} (Kaggle).\\
+  \url{https://www.kaggle.com/sinaasappel/tutorial-multiple-regression/data#Tutorial---Multiple-Regression}
+\bibitem{stackabuse}
+  \'Enonc\'e de l'atelier, r\'ef\'erence 3 : \emph{Multiple Linear Regression with Python} (Stack Abuse).\\
+  \url{https://stackabuse.com/multiple-linear-regression-with-python/}
+\bibitem{sweetcode}
+  \'Enonc\'e de l'atelier, r\'ef\'erence 4 : \emph{Simple and multiple linear regression in Python with scikit-learn} (Sweetcode).\\
+  \url{https://sweetcode.io/simple-multiple-linear-regression-python-scikit/}
+\bibitem{salary}
+  Jeu de donn\'ees Exp\'erience / Salaire (Kaggle).\\
+  \url{https://www.kaggle.com/rohankayan/years-of-experience-and-salary-dataset}
+\bibitem{insurance}
+  Jeu de donn\'ees Assurance (Kaggle).\\
+  \url{https://www.kaggle.com/sinaasappel/tutorial-multiple-regression/data}
+\bibitem{chinagdp}
+  Jeu de donn\'ees China GDP (IBM Cognitive Class).\\
+  \url{https://s3-api.us-geo.objectstorage.softlayer.net/cf-courses-data/CognitiveClass/ML0101ENv3/labs/china_gdp.csv}
+\end{thebibliography}
+
+% =============================================================================
+% ANNEXE
+% =============================================================================
+\appendix
+\chapter{Reproduction et contr\^oles}
+
+\section{Commandes}
+
+\begin{lstlisting}[language=bash]
+make setup && make data && make all && make report
+\end{lstlisting}
+
+Les identifiants Kaggle sont fournis uniquement par les variables d'environnement
+\texttt{KAGGLE\_\allowbreak USERNAME} et \texttt{KAGGLE\_\allowbreak KEY} ; ils ne sont jamais \'ecrits dans un fichier
+ni dans git. Les jeux de donn\'ees ne sont pas versionn\'es.
+
+\section{Captures de contr\^ole}
+
+\shot{g_01_make_all.png}{ex\'ecution r\'eussie de \texttt{make all}}{fig:shot_g01}
+\shot{g_02_git_log_graph.png}{historique git (\texttt{git log --oneline --graph})}{fig:shot_g02}
+\shot{g_03_github_repo.png}{page du d\'ep\^ot GitHub}{fig:shot_g03}
+\shot{g_04_pdf_compiled.png}{rapport PDF compil\'e}{fig:shot_g04}
+
+\end{document}
