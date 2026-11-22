@@ -1,0 +1,40 @@
+[salary] loaded data/raw/Salary_Data.csv -> shape (30, 2)
+[salary] columns found: ['YearsExperience', 'Salary']
+Rows kept after numeric conversion / NaN removal: 30 / 30
+
+==============================================================================
+Item 1 - train/test split and LinearRegression fit
+==============================================================================
+train = 24 rows, test = 6 rows (test_size=0.2, random_state=42)
+Model: Salary = 25321.5830 + 9423.8153 x YearsExperience
+
+==============================================================================
+Item 2 - predictions on the test set
+==============================================================================
+ YearsExperience  Salaire réel  Salaire prédit  Erreur (réel - prédit)
+             3.2       64445.0    55477.792045             8967.207955
+             3.7       57189.0    60189.699707            -3000.699707
+             4.9       67938.0    71498.278095            -3560.278095
+             5.3       83088.0    75267.804224             7820.195776
+             8.2      113812.0   102596.868661            11215.131339
+             9.6      112635.0   115790.210113            -3155.210113
+[latex] saved report/generated/part2_predictions.tex
+
+==============================================================================
+Item 3 - regression plot
+==============================================================================
+[figure] saved report/figures/p2_regression_plot.png
+
+==============================================================================
+Item 4 - evaluation (MSE, RMSE, MAE)
+==============================================================================
+TRAIN                        MSE=2.71022e+07  RMSE=5205.98  MAE=4221.05  R2=0.9645
+TEST                         MSE=4.98301e+07  RMSE=7059.04  MAE=6286.45  R2=0.9024
+Baseline RMSE (always predict the train mean): 24318.3
+Target mean = 76003, target std = 27414.4
+RMSE(test) / mean(target) = 9.29 %
+Overfitting check: compare TRAIN and TEST RMSE / R2 above.
+[results] saved results/part2_metrics.json
+[latex] saved report/generated/part2_metrics.tex
+
+Part 2 finished.

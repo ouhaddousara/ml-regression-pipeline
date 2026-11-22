@@ -1,0 +1,26 @@
+{
+  "dataset": "Experience / Salary",
+  "feature": "YearsExperience",
+  "target": "Salary",
+  "test_size": 0.2,
+  "random_state": 42,
+  "n_train": 24,
+  "n_test": 6,
+  "slope": 9423.815323030976,
+  "intercept": 25321.583011776813,
+  "train": {
+    "mse": 27102249.73126139,
+    "rmse": 5205.982110155719,
+    "mae": 4221.046734449738,
+    "r2": 0.9645401573418146
+  },
+  "test": {
+    "mse": 49830096.85590839,
+    "rmse": 7059.04362190151,
+    "mae": 6286.453830757749,
+    "r2": 0.9024461774180497
+  },
+  "baseline_rmse": 24318.310557046483,
+  "target_mean": 76003.0,
+  "target_std": 27414.4297845823
+}
