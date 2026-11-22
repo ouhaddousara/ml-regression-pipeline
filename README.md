@@ -14,10 +14,11 @@ et Techniques de Tanger, Département Génie Informatique, cycle ingénieur LSI 
 4. [Correspondance énoncé → sorties](#correspondance-énoncé--sorties)
 5. [Méthodologie (le pourquoi de chaque décision)](#méthodologie)
 6. [Résultats](#résultats)
-7. [Reproductibilité](#reproductibilité)
-8. [Limitations](#limitations)
-9. [Build du rapport](#build-du-rapport)
-10. [Auteur](#auteur)
+7. [Aperçu des figures](#aperçu-des-figures)
+8. [Reproductibilité](#reproductibilité)
+9. [Limitations](#limitations)
+10. [Rapport PDF et build](#rapport-pdf-et-build)
+11. [Auteur](#auteur)
 
 ## Objectifs
 - Pratiquer la régression linéaire simple (Salary), multiple (Insurance) et polynomiale (China GDP).
@@ -30,7 +31,8 @@ src/            utils.py, part1_eda.py, part2_simple_regression.py,
                 part3_multiple_regression.py, part4_polynomial_regression.py
 data/           README.md + raw/ (CSV non versionnés)
 results/        metrics (*.json), prédictions (*.csv), logs/partN.txt
-report/         main.tex, figures/ (PNG 200 dpi), generated/ (snippets LaTeX), screenshots/
+report/         main.tex, Rapport_Atelier1_Regression_Ouhaddou_Sara.pdf (version finale),
+                figures/ (PNG 200 dpi), generated/ (snippets LaTeX), screenshots/
 docs/           SCREENSHOTS.md (checklist des captures)
 Makefile, requirements.txt, .gitignore
 ```
@@ -95,6 +97,17 @@ Degré polynomial retenu (Partie 4) : **4** (règle de parcimonie : plus petit d
 
 Variables retenues (Partie 3, rang moyen sur corrélation, F et information mutuelle) : `smoker_yes`, `age`, `bmi`.
 
+## Aperçu des figures
+Figures produites par les scripts (`make all`), reprises dans le rapport ; les autres sont dans `report/figures/`.
+
+| Partie 2 — régression simple | Partie 3 — sélection de variables |
+|:---:|:---:|
+| <img src="report/figures/p2_regression_plot.png" width="420" alt="Régression linéaire simple, Salary"> | <img src="report/figures/p3_feature_scores.png" width="420" alt="Scores de sélection de variables, Insurance"> |
+
+| Partie 3 — valeurs réelles vs prédites | Partie 4 — linéaire vs polynomial |
+|:---:|:---:|
+| <img src="report/figures/p3_actual_vs_predicted.png" width="420" alt="Valeurs réelles vs prédites, Insurance"> | <img src="report/figures/p4_comparison.png" width="420" alt="Comparaison linéaire / polynomial, China GDP"> |
+
 ## Reproductibilité
 - `random_state=42` pour le split et l'information mutuelle ; versions des librairies en bornes minimales dans `requirements.txt` (relever `pip freeze` pour un gel exact).
 - Les datasets ne sont pas versionnés ; les identifiants Kaggle ne sont jamais écrits dans un fichier ni dans git. `results/part3_predictions.csv` (lignes de test dérivées du dataset Insurance) est volontairement ignoré par git.
@@ -107,11 +120,14 @@ Variables retenues (Partie 3, rang moyen sur corrélation, F et information mutu
 - Les noms de colonnes et de fichiers des datasets sont des hypothèses ; si un dataset diffère, adapter `DATASETS` dans `src/utils.py`.
 - Le miroir IBM du CSV China GDP dans `utils.py` est à vérifier ; le téléchargement manuel reste la référence.
 
-## Build du rapport
+## Rapport PDF et build
+Le rapport final est versionné : [`report/Rapport_Atelier1_Regression_Ouhaddou_Sara.pdf`](report/Rapport_Atelier1_Regression_Ouhaddou_Sara.pdf) (aussi joint à la release `v1.0.0`). C'est une copie figée : en cas de modification du code ou du `.tex`, relancer `make all && make report` puis recopier le PDF.
+
 ```bash
 make report        # latexmk -pdf -interaction=nonstopmode -outdir=build main.tex (dans report/)
+cp report/build/main.pdf report/Rapport_Atelier1_Regression_Ouhaddou_Sara.pdf
 ```
-Le PDF est produit dans `report/build/main.pdf`. Les captures optionnelles placées dans `report/screenshots/` sont incluses automatiquement (voir `docs/SCREENSHOTS.md`).
+Le PDF compilé est produit dans `report/build/main.pdf` (dossier ignoré par git). Les captures optionnelles placées dans `report/screenshots/` sont incluses automatiquement (voir `docs/SCREENSHOTS.md`).
 
 ## Auteur
 **Sara Ouhaddou** — Ingénierie LSI (Software and Intelligent Systems), FST Tanger — [github.com/ouhaddousara](https://github.com/ouhaddousara)
