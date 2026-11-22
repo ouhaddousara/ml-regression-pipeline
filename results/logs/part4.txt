@@ -1,0 +1,69 @@
+[china_gdp] loaded data/raw/china_gdp.csv -> shape (55, 2)
+[china_gdp] columns found: ['Year', 'Value']
+Rows kept after numeric conversion / NaN removal: 55 / 55
+Year range: 1960 - 2014
+
+==============================================================================
+Item 1 - train/test split and model fits
+==============================================================================
+train = 44 rows, test = 11 rows (test_size=0.2, random_state=42)
+
+[Linéaire] coefficients (in the standardised-Year space): [1.75632e+12]  intercept: 1.38485e+12
+
+[Polynomiale d=2] coefficients (in the standardised-Year space): [1.722111e+12 1.554633e+12]  intercept: -1.69783e+11
+
+[Polynomiale d=3] coefficients (in the standardised-Year space): [-2.889114e+11  1.478730e+12  1.115081e+12]  intercept: -1.18417e+11
+
+[Polynomiale d=4] coefficients (in the standardised-Year space): [-1.674765e+11 -1.040483e+11  1.027221e+12  6.179301e+11]  intercept: 3.50947e+11
+
+==============================================================================
+Item 2 - predictions on the test set
+==============================================================================
+ Year   Réel  Linéaire  Polynomiale d=2  Polynomiale d=3  Polynomiale d=4
+ 1965 0.0697   -0.9643           0.3081           0.2452          -0.0915
+ 1972 0.1122   -0.1962          -0.4602           0.5265           0.0738
+ 1973 0.1368   -0.0865          -0.5214           0.5058           0.1186
+ 1979 0.1769    0.5719          -0.6338           0.2216           0.3327
+ 1986 0.2988    1.3400          -0.2128          -0.1101           0.3551
+ 1991 0.3815    1.8886           0.4521          -0.0533           0.3228
+ 1992 0.4249    1.9983           0.6214           0.0086           0.3327
+ 2001 1.3322    2.9859           2.6919           1.6917           1.3166
+ 2003 1.6499    3.2053           3.2855           2.4127           1.9228
+ 2009 5.0594    3.8637           5.3577           5.5546           5.2474
+ 2012 8.4616    4.1929           6.5575           7.7569           8.0531
+[latex] saved report/generated/part4_predictions.tex
+
+==============================================================================
+Item 4 - evaluation (MSE, RMSE, MAE) for every model
+==============================================================================
+Linéaire TRAIN               MSE=2.92767e+24  RMSE=1.71104e+12  MAE=1.28446e+12  R2=0.5131
+Linéaire TEST                MSE=2.90972e+24  RMSE=1.70579e+12  MAE=1.34145e+12  R2=0.5578
+Polynomiale d=2 TRAIN        MSE=9.83309e+23  RMSE=9.91619e+11  MAE=7.96511e+11  R2=0.8365
+Polynomiale d=2 TEST         MSE=9.10784e+23  RMSE=9.5435e+11  MAE=7.50538e+11  R2=0.8616
+Polynomiale d=3 TRAIN        MSE=2.20085e+23  RMSE=4.69133e+11  MAE=3.92476e+11  R2=0.9634
+Polynomiale d=3 TEST         MSE=2.11188e+23  RMSE=4.59552e+11  MAE=4.16882e+11  R2=0.9679
+Polynomiale d=4 TRAIN        MSE=4.49845e+22  RMSE=2.12096e+11  MAE=1.68491e+11  R2=0.9925
+Polynomiale d=4 TEST         MSE=3.12825e+22  RMSE=1.76869e+11  MAE=1.33243e+11  R2=0.9952
+Baseline RMSE (always predict the train mean): 2.57841e+12
+
+==============================================================================
+Degree selection (parsimony rule on the test RMSE)
+==============================================================================
+Best polynomial test RMSE = 1.76869e+11; threshold (+5 %) = 1.85712e+11
+Eligible degrees: [4] -> CHOSEN DEGREE = 4
+Caveat: the selection uses the test set, so the reported test error of the chosen model is slightly optimistic.
+
+==============================================================================
+Item 3 - comparison plot (and extrapolation risk)
+==============================================================================
+[figure] saved report/figures/p4_comparison.png
+
+Predictions at Year = 2024 (outside the data, in 1e12 units):
+  Linéaire           5.5096
+  Polynomiale d=2    12.4494
+  Polynomiale d=3    21.8034
+  Polynomiale d=4    31.4885
+[results] saved results/part4_metrics.json
+[latex] saved report/generated/part4_metrics.tex
+
+Part 4 finished.
